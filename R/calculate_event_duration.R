@@ -41,7 +41,7 @@ calculate_event_duration <- function(dat,
   dat.out <- dat %>%
     group_by(...) %>%
     # MUST be in chronological order within groups for rleid to give correct result
-    arrange(TIMESTAMP) %>%
+    arrange(TIMESTAMP, .by_group = TRUE) %>%
     # add id for different events
     mutate(
       tmp = exceed_thresh(VALUE),
