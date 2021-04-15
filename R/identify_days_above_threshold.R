@@ -23,15 +23,18 @@
 #'   day will be filtered out, etc.
 #'
 #' @return Returns table of dates that should be filtered based on threshold,
-#'   min_exceedance, and n_extra_days
+#'   min_exceedance, and n_extra_days. Three columns: DEPTH, DATE, and n_obs
+#'   (the number of observations that exceeded the threshold at the DEPTH and
+#'   DATE).
 #'
 #' @importFrom dplyr mutate filter if_else group_by summarise
 #' @importFrom lubridate as_date days
+#' @importFrom purrr map_df
 #'
 #' @export
 
 
-identify_days_to_filter <- function(dat,
+identify_days_above_threshold <- function(dat,
                                     threshold = 20,
                                     min_exceedance = 1,
                                     n_extra_days = 0){
@@ -48,20 +51,41 @@ identify_days_to_filter <- function(dat,
   }
 
   # table of DEPTH and the DATE for which the threshold is exceeded
-  to_remove1 <- dat %>%
+  to_remove <- dat %>%
     mutate(
-      DATE = lubridate::as_date(TIMESTAMP),
+      DATE = as_date(TIMESTAMP),
       EXCEED_THRESH = if_else(VALUE >= threshold, TRUE, FALSE)
     ) %>%
     group_by(DEPTH, DATE) %>%
     summarise(n_obs = sum(EXCEED_THRESH)) %>%
-    filter(n_obs >= min_exceedance)
+    filter(n_obs >= min_exceedance) %>%
+    ungroup()
 
-  # copy the rows of the table and add n.extra days to each date
-  to_remove1 %>%
-    rbind(
-      to_remove1 %>% mutate(DATE = DATE + lubridate::days(n_extra_days))
-    ) %>%
-    distinct(DATE, DEPTH)
+  # add 1 day to each date, then add 2 days to each date, until n_extra_days
+  if(n_extra_days > 0){
+
+    to_remove_extra <- list()
+
+    for(i in 1:n_extra_days){
+
+      remove.i <- to_remove %>%
+        mutate(DATE = DATE + lubridate::days(i))
+
+      to_remove_extra[[i]] <- remove.i
+    }
+
+    # unlist and bind with original dates. Remove duplicates
+    to_remove_extra <- to_remove_extra %>%
+      purrr::map_df(rbind) %>%
+      rbind(to_remove) %>%
+      distinct(DATE, DEPTH) %>%
+      arrange(DEPTH, DATE)
+
+    # so thats n_obs is correct (NA for days without exceedances)
+    to_remove <- to_remove_extra %>%
+      left_join(to_remove, by = c("DEPTH", "DATE"))
+  }
+
+  to_remove
 
 }
