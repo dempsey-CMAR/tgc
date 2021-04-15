@@ -27,6 +27,10 @@ utils::globalVariables(c(
   "EXCEED_THRESH",
   "n_obs",
 
+  #identify_trending_up_days
+  "CROSS_THRESH",
+  "START_TREND",
+
   # calculate_event_duration
   "tmp",
   "event_id",
