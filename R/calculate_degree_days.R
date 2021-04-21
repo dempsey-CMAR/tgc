@@ -67,14 +67,14 @@ calculate_degree_days <- function(dat,
   start.date <- format_date_for_dd(start.date, day1 = TRUE)
   end.date <- format_date_for_dd(end.date, day1 = FALSE)
 
-  # filter to the dates of interest
-  dat <- dat %>%
-    filter(VARIABLE == "Temperature",
-           TIMESTAMP >= start.date,
-           TIMESTAMP <= end.date)
+  if("VARIABLE" %in% colnames(dat)){
+
+    dat <- filter(dat, VARIABLE == "Temperature")
+  }
 
   # calculate and return degree-days
   dat %>%
+    filter(TIMESTAMP >= start.date, TIMESTAMP <= end.date) %>%
     # group by the columns specified in ...
     group_by(...) %>%
     mutate(DATE = date(TIMESTAMP)) %>%
