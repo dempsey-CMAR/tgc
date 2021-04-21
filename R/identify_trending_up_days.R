@@ -1,16 +1,29 @@
 #' Identifies when VALUE begins trending up
 #' @details Identifies timestamp when value crosses threshold and does not
-#'   return below the threshold.
+#'   return below the threshold, for each group in \code{...}.
 #'
-#' @param lower_threshold Default is \code{lower_threshold = 4}
+#' @param lower_threshold Default is \code{lower_threshold = 4}.
 #' @inheritParams calculate_degree_days
-
+#' @return Returns the TIMESTAMP (for each group in \code{...}) for the final
+#'   time VALUE exceeds \code{lower_threshold} and does not return below
+#'   \code{lower_threshold}.
+#'
+#'   No row will be returned for groups for which VALUE did not cross
+#'   \code{lower_threshold}.
+#'
 #' @importFrom dplyr arrange mutate filter summarise ungroup
 #' @importFrom lubridate year
 #' @export
+#'
+#' @examples
+#' data("string_data")
+#'
+#' string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
+#' trend_up <- identify_trending_up_days(string_data,lower_threshold = 4, DEPTH)
 
 
-identify_trending_up_days <- function(dat, lower_threshold = 4, ...){
+
+identify_trending_up_days <- function(dat, ..., lower_threshold = 4){
 
 
   if("VARIABLE" %in% colnames(dat)){
