@@ -28,6 +28,9 @@ lower_threshold <- 4
 rm(dat1, dat2)
 
 # Case 1: Group by DEPTH --------------------------------------------------
+# p <- ggplot_variables_at_depth(filter(dat1_shuffle, DEPTH == "5")) +
+#   geom_hline(yintercept = lower_threshold, col = "red")
+# ggplotly(p)
 
 trend_up <- dat1_shuffle %>%
   mutate(YEAR = year(TIMESTAMP)) %>%
@@ -42,11 +45,11 @@ trend_up <- dat1_shuffle %>%
 
 trend_up_foo <- identify_trending_up_days(
   dat1_shuffle,
-  lower_threshold = lower_threshold,
-  DEPTH
+  DEPTH,
+  lower_threshold = lower_threshold
 )
 
-test_that("function identifies correct trending up dates when grouped by DEPTH",{
+test_that("function identifies trending up dates when grouped by DEPTH",{
 
   expect_equal(trend_up, trend_up_foo)
 
@@ -67,8 +70,8 @@ trend_up <- dat %>%
 
 trend_up_foo <- identify_trending_up_days(
   dat,
-  lower_threshold = lower_threshold,
-  YEAR, DEPTH
+  YEAR, DEPTH,
+  lower_threshold = lower_threshold
 )
 
 test_that("function identifies correct trending up dates when grouped by YEAR and DEPTH",{

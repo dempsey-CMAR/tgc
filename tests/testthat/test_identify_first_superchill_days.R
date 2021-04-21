@@ -8,7 +8,7 @@ data("string_data")
 
 dat1 <- string_data %>%
   filter(VARIABLE == "Temperature") %>%
-  select(-SENSOR, -DEPLOYMENT_PERIOD) %>%
+  select(-SENSOR, -DEPLOYMENT_PERIOD, -VARIABLE) %>%
   mutate(VALUE = VALUE - 6)
 dat1$TIMESTAMP <- rev(dat1$TIMESTAMP)
 
@@ -28,60 +28,60 @@ dat2_shuffle <- dat2[rows, ]
 dat <- rbind(dat1_shuffle, dat2_shuffle)
 
 
-lower_threshold <- -0.7
+superchill_threshold <- -0.7
 
 rm(dat1, dat2)
 
 # Case 1: Group by DEPTH --------------------------------------------------
-ggplot_variables_at_depth(dat1) +
-  geom_hline(yintercept = lower_threshold, col = "red")
+# p <- ggplot_variables_at_depth(dat1) +
+#   geom_hline(yintercept = superchill_threshold, col = "red")
 
 superchill <- dat1_shuffle %>%
   mutate(YEAR = year(TIMESTAMP)) %>%
   group_by(DEPTH) %>%
   arrange(TIMESTAMP, .by_group = TRUE) %>%
   mutate(CROSS_THRESH = if_else(
-    # might need to switch these signs
-    lag(VALUE) < lower_threshold & VALUE >= lower_threshold, TRUE, FALSE )
+    lag(VALUE) > superchill_threshold &
+      VALUE <= superchill_threshold, TRUE, FALSE )
   ) %>%
   filter(CROSS_THRESH) %>%
-  summarise(START_TREND = min(TIMESTAMP)) %>%
+  summarise(FIRST_CROSS = min(TIMESTAMP)) %>%
   ungroup()
 
 superchill_foo <- identify_first_superchill_days(
   dat1_shuffle,
-  lower_threshold = lower_threshold,
-  DEPTH
+  DEPTH,
+  superchill_threshold = superchill_threshold
 )
 
-test_that("function identifies correct first superchill dates when grouped by DEPTH",{
+test_that("function identifies first superchill dates when grouped by DEPTH",{
 
   expect_equal(superchill, superchill_foo)
 
 })
 
 # Case 2: Group by YEAR and DEPTH  --------------------------------------------------
-
-trend_up <- dat %>%
+superchill <- dat %>%
   mutate(YEAR = year(TIMESTAMP)) %>%
   group_by(YEAR, DEPTH) %>%
   arrange(TIMESTAMP, .by_group = TRUE) %>%
   mutate(CROSS_THRESH = if_else(
-    lag(VALUE) < lower_threshold & VALUE >= lower_threshold, TRUE, FALSE )
+    lag(VALUE) > superchill_threshold &
+      VALUE <= superchill_threshold, TRUE, FALSE )
   ) %>%
   filter(CROSS_THRESH) %>%
-  summarise(START_TREND = max(TIMESTAMP)) %>%
+  summarise(FIRST_CROSS = min(TIMESTAMP)) %>%
   ungroup()
 
-trend_up_foo <- identify_trending_up_days(
+superchill_foo <- identify_first_superchill_days(
   dat,
-  lower_threshold = lower_threshold,
-  YEAR, DEPTH
+  YEAR, DEPTH,
+  superchill_threshold = superchill_threshold
 )
 
-test_that("function identifies correct dates when grouped by YEAR and DEPTH",{
+test_that("function identifies dates when grouped by YEAR and DEPTH",{
 
-  expect_equal(trend_up, trend_up_foo)
+  expect_equal(superchill, superchill_foo)
 
 })
 
