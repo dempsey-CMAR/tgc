@@ -4,7 +4,7 @@
 \alias{identify_trending_up_days}
 \title{Identifies when VALUE begins trending up}
 \usage{
-identify_trending_up_days(dat, lower_threshold = 4, ...)
+identify_trending_up_days(dat, ..., lower_threshold = 4)
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
@@ -13,15 +13,29 @@ column \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
-\item{lower_threshold}{Default is \code{lower_threshold = 4}}
-
 \item{...}{Columns in \code{dat} to use for grouping in
 \code{dplyr::group_by()}, e.g., \code{YEAR, DEPTH}.}
+
+\item{lower_threshold}{Default is \code{lower_threshold = 4}.}
+}
+\value{
+Returns the TIMESTAMP (for each group in \code{...}) for the final
+time VALUE exceeds \code{lower_threshold} and does not return below
+\code{lower_threshold}.
+
+No row will be returned for groups for which VALUE did not cross
+\code{lower_threshold}.
 }
 \description{
 Identifies when VALUE begins trending up
 }
 \details{
 Identifies timestamp when value crosses threshold and does not
-return below the threshold.
+return below the threshold, for each group in \code{...}.
+}
+\examples{
+data("string_data")
+
+string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
+trend_up <- identify_trending_up_days(string_data,lower_threshold = 4, DEPTH)
 }
