@@ -34,8 +34,20 @@ utils::globalVariables(c(
   # calculate_event_duration
   "tmp",
   "event_id",
-  "event_duration_days"
+  "event_duration_days",
 
+  # identify_heat_stress_intervals
+  "EXCEED_THRESH",
+  "interval_start",
+  "interval_end",
+
+  # identify_heat_stress_events
+  "overlap",
+  "event_id1",
+  "event_id2",
+  "event_id3",
+  "stress_start",
+  "stress_end"
 
 ))
 
