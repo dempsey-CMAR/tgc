@@ -27,9 +27,12 @@ utils::globalVariables(c(
   "EXCEED_THRESH",
   "n_obs",
 
-  #identify_trending_up_days
+  #identify_trending_up
   "CROSS_THRESH",
   "START_TREND",
+
+  # identify_first_superchill
+  "FIRST_CHILL",
 
   # calculate_event_duration
   "tmp",
@@ -47,7 +50,14 @@ utils::globalVariables(c(
   "event_id2",
   "event_id3",
   "stress_start",
-  "stress_end"
+  "stress_end",
+
+  # identify_growing_seasons
+  "MONTH",
+  "YEAR",
+  "START_SEASON",
+  "END_SEASON",
+  "SEASON"
 
 ))
 
