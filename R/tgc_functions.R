@@ -9,7 +9,7 @@
 #' @export
 
 
-calculate_final_weight_TGC <-function(initial_weight, tgc, degree_days){
+TGC_calculate_final_weight <-function(initial_weight, tgc, degree_days){
 
   ( initial_weight^(1/3) + (tgc/100)*degree_days )^3
 
@@ -23,7 +23,7 @@ calculate_final_weight_TGC <-function(initial_weight, tgc, degree_days){
 #' @return Returns a single value
 #' @export
 
-calculate_initial_weight_TGC <- function(final_weight, tgc, degree_days){
+TGC_calculate_initial_weight <- function(final_weight, tgc, degree_days){
 
   ( final_weight^(1/3) - (tgc/100)*degree_days )^3
 
@@ -39,7 +39,7 @@ calculate_initial_weight_TGC <- function(final_weight, tgc, degree_days){
 #'
 #' @return Returns a single value
 #' @export
-calculate_degree_days_TGC <- function(initial_weight, final_weight, tgc){
+TGC_calculate_degree_days <- function(initial_weight, final_weight, tgc){
 
   (final_weight^(1/3) - initial_weight^(1/3) ) * 100/tgc
 
