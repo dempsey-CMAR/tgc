@@ -48,10 +48,6 @@ identify_heat_stress_events <- function(dat,
           dplyr::lag(event_id1),
         TRUE ~ event_id1
       ),
-      # if_else(
-      #   overlap == FALSE & dplyr::lag(overlap) == TRUE,
-      #   dplyr::lag(event_id1), event_id1
-      # ),
       # for the last observation (overlap = NA, so event_id2 = NA)
       event_id3 = case_when(
         interval_start == max(interval_start) & dplyr::lag(overlap) == TRUE ~
