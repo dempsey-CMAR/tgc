@@ -28,7 +28,7 @@
 #'   HM", "Ymd HMS", "dmY HM", "dmY HMS", "Ymd", "ymd". Default is the last
 #'   TIMESTAMP in \code{dat}.
 #' @param ... Columns in \code{dat} to use for grouping in
-#'   \code{dplyr::group_by()}, e.g., \code{YEAR, DEPTH}.
+#'   \code{dplyr::group_by()}, e.g., \code{DEPTH}.
 #' @return Returns a tibble with at least five columns: \code{PERIOD} (start and
 #'   end date used to calculate mean temperature and number of days),
 #'   \code{n_DAYS} (the number of days, \emph{n}, used in the calculation),

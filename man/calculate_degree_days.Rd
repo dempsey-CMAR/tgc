@@ -19,7 +19,7 @@ include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
 \item{...}{Columns in \code{dat} to use for grouping in
-\code{dplyr::group_by()}, e.g., \code{YEAR, DEPTH}.}
+\code{dplyr::group_by()}, e.g., \code{DEPTH}.}
 
 \item{start.date}{First day to include in the calculation. If
 \code{start.date} does not include a time, then the start time is assumed
