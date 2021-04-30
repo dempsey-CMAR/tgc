@@ -35,17 +35,14 @@ the growing season for each group in \code{...}.}
 have no temperature observations below \code{superchill_threshold}.}
 }
 \value{
-filtered and labelled dat; some obs could appear twice!
+Returns dat, filtered for observations that occur during growing
+seasons identified in \code{identify_growing_seasons}, with an additional
+column \code{SEASON} to label the seasons ("S1", "S2", ...). Some
+observations may be duplicated in consecutive seasons.
 }
 \description{
 Keeps observations that occur during growing seasons
 }
 \details{
 for ONE STATION
-
-output includes SEASON column
-
-seasons can overlap
-
-seasons are labelled
 }

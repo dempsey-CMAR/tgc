@@ -25,15 +25,17 @@
 
 
 filter_heat_stress_events <- function(dat,
-                                      threshold = 18,
+                                      heat_threshold = 18,
                                       n_hours = 24){
 
   dat <- dat %>%
     mutate(TIMESTAMP = as_datetime(TIMESTAMP))
 
-  heat_stress_events <- identify_heat_stress_events(dat = dat,
-                                                    threshold = threshold,
-                                                    n_hours = n_hours)
+  heat_stress_events <- identify_heat_stress_events(
+    dat = dat,
+    heat_threshold = heat_threshold,
+    n_hours = n_hours
+  )
 
   depths <- unique(dat$DEPTH)
 

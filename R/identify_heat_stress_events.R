@@ -25,11 +25,11 @@
 
 
 identify_heat_stress_events <- function(dat,
-                                        threshold = 18,
+                                        heat_threshold = 18,
                                         n_hours = 24){
 
   identify_heat_stress_intervals(dat = dat,
-                                 threshold = threshold,
+                                 heat_threshold = heat_threshold,
                                  n_hours = n_hours) %>%
     dplyr::group_by(DEPTH) %>%
     dplyr::arrange(interval_start, .by_group = TRUE) %>%

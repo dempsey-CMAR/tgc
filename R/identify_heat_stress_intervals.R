@@ -5,8 +5,8 @@
 #'   \code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
 #'   must have one unique entry. Other columns will be ignored.
 #'
-#' @param threshold The threshold to trigger heat stress interval (inclusive.
-#'   Default is \code{threshold = 18}).
+#' @param heat_threshold The threshold to trigger heat stress interval
+#'   (inclusive. Default is \code{heat_threshold = 18}).
 #'
 #' @param n_hours Length of heat stress interval in hours (default is
 #'   \code{n_hours = 24}).
@@ -37,7 +37,7 @@
 
 
 identify_heat_stress_intervals <- function(dat,
-                                           threshold = 18,
+                                           heat_threshold = 18,
                                            n_hours = 24){
 
 
@@ -54,7 +54,7 @@ identify_heat_stress_intervals <- function(dat,
   dat %>%
     mutate(
       TIMESTAMP = as_datetime(TIMESTAMP),
-      EXCEED_THRESH = VALUE >= threshold
+      EXCEED_THRESH = VALUE >= heat_threshold
     ) %>%
     filter(EXCEED_THRESH) %>%
     mutate(

@@ -4,7 +4,7 @@
 \alias{filter_heat_stress_events}
 \title{Filters out observations that occur during heat stress events}
 \usage{
-filter_heat_stress_events(dat, threshold = 18, n_hours = 24)
+filter_heat_stress_events(dat, heat_threshold = 18, n_hours = 24)
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (POSIXct
@@ -12,8 +12,8 @@ or character in the order year, month, day, hours, minutes, seconds),
 \code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
 must have one unique entry. Other columns will be ignored.}
 
-\item{threshold}{The threshold to trigger heat stress interval (inclusive.
-Default is \code{threshold = 18}).}
+\item{heat_threshold}{The threshold to trigger heat stress interval
+(inclusive. Default is \code{heat_threshold = 18}).}
 
 \item{n_hours}{Length of heat stress interval in hours (default is
 \code{n_hours = 24}).}

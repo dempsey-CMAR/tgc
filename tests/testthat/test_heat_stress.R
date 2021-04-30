@@ -22,11 +22,11 @@ n_hours <- 24
 
 # Run functions -----------------------------------------------------------
 
-intervals <- identify_heat_stress_intervals(dat, threshold = thresh)
+intervals <- identify_heat_stress_intervals(dat, heat_threshold = thresh)
 
-events <- identify_heat_stress_events(dat, threshold = thresh)
+events <- identify_heat_stress_events(dat, heat_threshold = thresh)
 
-filtered_data <- filter_heat_stress_events(dat, threshold = thresh)
+filtered_data <- filter_heat_stress_events(dat, heat_threshold = thresh)
 
 # format interval and filtered data
 intervals_tidy <- pivot_longer(
