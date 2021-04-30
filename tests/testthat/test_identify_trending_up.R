@@ -23,13 +23,13 @@ rows <- sample(nrow(dat2))
 dat2_shuffle <- dat2[rows, ]
 
 dat <- rbind(dat1_shuffle, dat2_shuffle)
-lower_threshold <- 4
+trend_threshold <- 4
 
 rm(dat1, dat2)
 
 # Case 1: Group by DEPTH --------------------------------------------------
 # p <- ggplot_variables_at_depth(filter(dat1_shuffle, DEPTH == "5")) +
-#   geom_hline(yintercept = lower_threshold, col = "red")
+#   geom_hline(yintercept = trend_threshold, col = "red")
 # ggplotly(p)
 
 trend_up <- dat1_shuffle %>%
@@ -37,16 +37,16 @@ trend_up <- dat1_shuffle %>%
   group_by(DEPTH) %>%
   arrange(TIMESTAMP, .by_group = TRUE) %>%
   mutate(CROSS_THRESH = if_else(
-    lag(VALUE) < lower_threshold & VALUE >= lower_threshold, TRUE, FALSE )
+    lag(VALUE) < trend_threshold & VALUE >= trend_threshold, TRUE, FALSE )
   ) %>%
   filter(CROSS_THRESH) %>%
   summarise(START_TREND = max(TIMESTAMP)) %>%
   ungroup()
 
-trend_up_foo <- identify_trending_up_days(
+trend_up_foo <- identify_trending_up(
   dat1_shuffle,
   DEPTH,
-  lower_threshold = lower_threshold
+  trend_threshold = trend_threshold
 )
 
 test_that("function identifies trending up dates when grouped by DEPTH",{
@@ -62,16 +62,16 @@ trend_up <- dat %>%
   group_by(YEAR, DEPTH) %>%
   arrange(TIMESTAMP, .by_group = TRUE) %>%
   mutate(CROSS_THRESH = if_else(
-    lag(VALUE) < lower_threshold & VALUE >= lower_threshold, TRUE, FALSE )
+    lag(VALUE) < trend_threshold & VALUE >= trend_threshold, TRUE, FALSE )
   ) %>%
   filter(CROSS_THRESH) %>%
   summarise(START_TREND = max(TIMESTAMP)) %>%
   ungroup()
 
-trend_up_foo <- identify_trending_up_days(
+trend_up_foo <- identify_trending_up(
   dat,
   YEAR, DEPTH,
-  lower_threshold = lower_threshold
+  trend_threshold = trend_threshold
 )
 
 test_that("function identifies correct trending up dates when grouped by YEAR and DEPTH",{

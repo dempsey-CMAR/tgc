@@ -45,10 +45,11 @@ superchill <- dat1_shuffle %>%
       VALUE <= superchill_threshold, TRUE, FALSE )
   ) %>%
   filter(CROSS_THRESH) %>%
-  summarise(FIRST_CROSS = min(TIMESTAMP)) %>%
+  summarise(FIRST_CHILL = min(TIMESTAMP)) %>%
+  mutate(FIRST_CHILL = FIRST_CHILL - minutes(1)) %>%
   ungroup()
 
-superchill_foo <- identify_first_superchill_days(
+superchill_foo <- identify_first_superchill(
   dat1_shuffle,
   DEPTH,
   superchill_threshold = superchill_threshold
@@ -70,10 +71,12 @@ superchill <- dat %>%
       VALUE <= superchill_threshold, TRUE, FALSE )
   ) %>%
   filter(CROSS_THRESH) %>%
-  summarise(FIRST_CROSS = min(TIMESTAMP)) %>%
+  summarise(FIRST_CHILL = min(TIMESTAMP)) %>%
+  mutate(FIRST_CHILL = FIRST_CHILL - minutes(1)) %>%
   ungroup()
 
-superchill_foo <- identify_first_superchill_days(
+
+superchill_foo <- identify_first_superchill(
   dat,
   YEAR, DEPTH,
   superchill_threshold = superchill_threshold
