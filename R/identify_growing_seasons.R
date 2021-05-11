@@ -38,7 +38,7 @@
 #'   for each group in \code{...}.
 #'
 #' @importFrom lubridate as_date minutes year month
-#'@importFrom dplyr filter full_join mutate group_by arrange select
+#' @importFrom dplyr filter full_join mutate group_by arrange select
 #'
 #' @export
 
