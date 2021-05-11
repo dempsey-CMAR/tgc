@@ -7,7 +7,6 @@
 plot_filtered_data(
   dat,
   dat_filtered,
-  ...,
   trend_threshold = 4,
   superchill_threshold = -0.7,
   heat_threshold = 18
@@ -22,9 +21,6 @@ will be ignored.}
 
 \item{dat_filtered}{Filtered data, i.e. the result of
 \code{apply_dd_filters(dat)}.}
-
-\item{...}{Columns in \code{dat} to use for grouping in
-\code{dplyr::group_by()}, e.g., \code{DEPTH}.}
 
 \item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
 observation above \code{trend_threshold} that does not return below
