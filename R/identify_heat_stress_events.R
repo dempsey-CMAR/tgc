@@ -48,13 +48,20 @@ identify_heat_stress_events <- function(dat,
           dplyr::lag(event_id1),
         TRUE ~ event_id1
       ),
-      # for the last observation (overlap = NA, so event_id2 = NA)
+      # edge cases
+
       event_id3 = case_when(
+        # if first interval does not overlap with the second interval
+        interval_start == min(interval_start) & overlap == FALSE ~
+          as.double(0),
+        # for the last observation, overlap = NA, so event_id2 = NA
+        # if last interval overlaps with second last interval, assign second last intervals id
         interval_start == max(interval_start) & dplyr::lag(overlap) == TRUE ~
-          dplyr::lag(event_id2),
+          as.double(dplyr::lag(event_id2)),
+        # if last interval does not overlap with second last interval, use original id
         interval_start == max(interval_start) & dplyr::lag(overlap) == FALSE ~
-          event_id1,
-        TRUE ~ event_id2
+          as.double(event_id1),
+        TRUE ~ as.double(event_id2)
       )
     ) %>%
     # find first last and last end of each event
