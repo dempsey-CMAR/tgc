@@ -20,6 +20,7 @@ Imports:
     lubridate,
     magrittr,
     purrr,
+    stringr,
     strings,
     tidyr
 Depends: 

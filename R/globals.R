@@ -57,7 +57,12 @@ utils::globalVariables(c(
   "YEAR",
   "START_SEASON",
   "END_SEASON",
-  "SEASON"
+  "SEASON",
+
+  # count_growing_days
+  "TOTAL_DAYS",
+  "n_filtered_days",
+  "n_growing_days"
 
 ))
 
