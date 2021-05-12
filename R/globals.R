@@ -11,7 +11,7 @@ utils::globalVariables(c(
   "cp",
   "SENSOR_NAME",
 
-  # calculate_degree_days
+  # count_degree_days
   "n_DAYS",
   "AVG_TEMPERATURE",
   "START_DAY",
@@ -51,6 +51,9 @@ utils::globalVariables(c(
   "event_id3",
   "stress_start",
   "stress_end",
+
+  # st_filter_heat_stress_events
+  "STATION",
 
   # identify_growing_seasons
   "MONTH",
