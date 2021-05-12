@@ -7,10 +7,11 @@
 count_growing_days(dat, ..., heat_threshold = 18, n_hours = 24)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (POSIXct
-or character in the order year, month, day, hours, minutes, seconds),
-\code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
-must have one unique entry. Other columns will be ignored.}
+\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
+column \code{VARIABLE} is included, it must have one unique entry. May also
+include columns with grouping variables passed to \code{...}. Other columns
+will be ignored.}
 
 \item{...}{Additional grouping variables (beside \code{DEPTH}).}
 
@@ -29,4 +30,9 @@ for each group), END_SEASON (maximum TIMESTAMP for each group), TOTAL_DAYS
 }
 \description{
 Count number of days that were suitable for growth
+}
+\examples{
+data(string_data)
+string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
+count_growing_days(string_data)
 }
