@@ -16,24 +16,45 @@
 
 
 apply_dd_filters <- function(dat,
-                             ...,
                              trend_threshold = 4,
                              superchill_threshold = -0.7,
                              max_season = 18,
                              heat_threshold = 18,
                              n_hours = 24){
 
-  dat %>%
-    filter_growing_seasons(
-      ..., DEPTH,
-      trend_threshold = trend_threshold,
-      superchill_threshold = superchill_threshold,
-      max_season = max_season
-    ) %>%
-    filter_heat_stress_events(
-      heat_threshold = heat_threshold,
-      n_hours = n_hours
-    )
+  # check how many different STATIONS are included in dat
+  if("STATION" %in% colnames(dat)){
 
+    n_stations <- length(unique(dat$STATION))
+
+  } else n_stations = 1
+
+  # if there is only one station, use regular filter functions; otherwise use st_filter functions
+  if(n_stations == 1){
+
+    dat %>%
+      filter_growing_seasons(
+        trend_threshold = trend_threshold,
+        superchill_threshold = superchill_threshold,
+        max_season = max_season
+      ) %>%
+      filter_heat_stress_events(
+        heat_threshold = heat_threshold,
+        n_hours = n_hours
+      )
+
+  } else {
+
+    dat %>%
+      st_filter_growing_seasons(
+        trend_threshold = trend_threshold,
+        superchill_threshold = superchill_threshold,
+        max_season = max_season
+      ) %>%
+      st_filter_heat_stress_events(
+        heat_threshold = heat_threshold,
+        n_hours = n_hours
+      )
+  }
 
 }

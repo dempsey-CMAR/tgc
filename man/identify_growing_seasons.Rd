@@ -19,8 +19,8 @@ column \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
-\item{...}{Columns in \code{dat} to use for grouping in
-\code{dplyr::group_by()}, e.g., \code{DEPTH}.}
+\item{...}{Additional columns in \code{dat} to use as grouping variables.
+Results are automatically grouped by \code{DEPTH}.}
 
 \item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
 observation above \code{trend_threshold} that does not return below

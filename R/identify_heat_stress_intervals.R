@@ -1,9 +1,6 @@
 #' Identifies n-hour intervals beginning when threshold is exceeded
 #'
-#' @param dat Dataframe with at least three columns: \code{TIMESTAMP} (POSIXct
-#'   or character in the order year, month, day, hours, minutes, seconds),
-#'   \code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
-#'   must have one unique entry. Other columns will be ignored.
+#' @inheritParams count_degree_days
 #'
 #' @param heat_threshold The threshold to trigger heat stress interval
 #'   (inclusive. Default is \code{heat_threshold = 18}).
@@ -37,6 +34,7 @@
 
 
 identify_heat_stress_intervals <- function(dat,
+                                           ...,
                                            heat_threshold = 18,
                                            n_hours = 24){
 
@@ -61,6 +59,6 @@ identify_heat_stress_intervals <- function(dat,
       interval_start = TIMESTAMP,
       interval_end = TIMESTAMP + hours(n_hours)
     ) %>%
-    select(DEPTH, interval_start, interval_end, -EXCEED_THRESH)
+    select(..., DEPTH, interval_start, interval_end, -EXCEED_THRESH)
 
 }

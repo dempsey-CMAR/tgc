@@ -3,7 +3,10 @@
 #' @details Identifies TIMESTAMP when VALUE first crosses below threshold for
 #'   each group in \code{...}.
 #'
-#' @inheritParams calculate_degree_days
+#'   If the VALUE does not cross the threshold for any groups, a dataframe with
+#'   0 rows will be returned.
+#'
+#' @inheritParams count_degree_days
 #' @param superchill_threshold Default is \code{superchill_threshold = -0.7}.
 #'   The first observation below \code{superchill_threshold} triggers the end of
 #'   the growing season for each group in \code{...}.
@@ -34,19 +37,27 @@ identify_first_superchill <- function(dat, ..., superchill_threshold = -0.7){
     }
   }
 
-  dat %>%
+  first_chill <- dat %>%
     mutate(YEAR = year(TIMESTAMP)) %>%
-    group_by(...) %>%
+    group_by(..., DEPTH) %>%
     arrange(TIMESTAMP, .by_group = TRUE) %>%
     mutate(CROSS_THRESH = if_else(
       lag(VALUE) > superchill_threshold & VALUE <= superchill_threshold, TRUE,
       FALSE )
     ) %>%
     filter(CROSS_THRESH) %>%
-    summarise(FIRST_CHILL = min(TIMESTAMP)) %>%
-    # because the VALUE at min(TIMESTAMP) is < superchill_threshold
-    # (don't want to include that value in filtered data)
-    mutate(FIRST_CHILL = FIRST_CHILL - minutes(1)) %>%
-    ungroup()
+    mutate(FIRST_CHILL = NA)
+
+  if(nrow(first_chill) > 0){
+
+    first_chill <- first_chill %>%
+      summarise(FIRST_CHILL = min(TIMESTAMP)) %>%
+      # because the VALUE at min(TIMESTAMP) is < superchill_threshold
+      # (don't want to include that value in filtered data)
+      mutate(FIRST_CHILL = FIRST_CHILL - minutes(1)) %>%
+      ungroup()
+  }
+
+  first_chill
 
 }

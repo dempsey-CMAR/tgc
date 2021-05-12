@@ -6,7 +6,7 @@
 #'   observation above \code{trend_threshold} that does not return below
 #'   \code{trend_threshold} triggers the beginning of the growing season for
 #'   each group in \code{...}.
-#' @inheritParams calculate_degree_days
+#' @inheritParams count_degree_days
 #'
 #' @return Returns the TIMESTAMP (for each group in \code{...}) for the final
 #'   time VALUE exceeds \code{trend_threshold} and does not return below
@@ -27,7 +27,7 @@
 #' data("string_data")
 #'
 #' string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
-#' trend_up <- identify_trending_up(string_data, trend_threshold = 4, DEPTH)
+#' trend_up <- identify_trending_up(string_data, trend_threshold = 4)
 
 
 identify_trending_up <- function(dat, ..., trend_threshold = 4){
@@ -45,7 +45,7 @@ identify_trending_up <- function(dat, ..., trend_threshold = 4){
 
   dat %>%
     mutate(YEAR = year(TIMESTAMP)) %>%
-    group_by(...) %>%
+    group_by(..., DEPTH) %>%
     arrange(TIMESTAMP, .by_group = TRUE) %>%
     mutate(CROSS_THRESH = if_else(
       lag(VALUE) < trend_threshold & VALUE >= trend_threshold, TRUE, FALSE )

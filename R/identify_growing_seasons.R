@@ -74,14 +74,15 @@ identify_growing_seasons <- function(dat,
     mutate(
       START_SEASON = START_TREND,
       END_SEASON = case_when(
-        is.na(FIRST_CHILL) ~ START_TREND + months(max_season), TRUE ~ FIRST_CHILL
+        is.na(FIRST_CHILL) ~ START_TREND + months(max_season),
+        TRUE ~ as_datetime(FIRST_CHILL)
       )
     ) %>%
     group_by(YEAR) %>%
     mutate(SEASON = cur_group_id(),
            SEASON = paste0("S", SEASON)) %>%
     ungroup() %>%
-    select(SEASON, ..., START_SEASON, END_SEASON) %>%
-    arrange(SEASON)
+    select(..., SEASON, DEPTH, START_SEASON, END_SEASON) %>%
+    arrange(..., SEASON, DEPTH)
 
 }

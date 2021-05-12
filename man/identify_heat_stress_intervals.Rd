@@ -4,13 +4,17 @@
 \alias{identify_heat_stress_intervals}
 \title{Identifies n-hour intervals beginning when threshold is exceeded}
 \usage{
-identify_heat_stress_intervals(dat, heat_threshold = 18, n_hours = 24)
+identify_heat_stress_intervals(dat, ..., heat_threshold = 18, n_hours = 24)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (POSIXct
-or character in the order year, month, day, hours, minutes, seconds),
-\code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
-must have one unique entry. Other columns will be ignored.}
+\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
+column \code{VARIABLE} is included, it must have one unique entry. May also
+include columns with grouping variables passed to \code{...}. Other columns
+will be ignored.}
+
+\item{...}{Additional columns in \code{dat} to use as grouping variables.
+Results are automatically grouped by \code{DEPTH}.}
 
 \item{heat_threshold}{The threshold to trigger heat stress interval
 (inclusive. Default is \code{heat_threshold = 18}).}
@@ -40,6 +44,7 @@ stress_intervals <- identify_heat_stress_intervals(dat)
 }
 \seealso{
 Other heat stress: 
-\code{\link{filter_heat_stress_events}()}
+\code{\link{filter_heat_stress_events}()},
+\code{\link{st_filter_heat_stress_events}()}
 }
 \concept{heat stress}

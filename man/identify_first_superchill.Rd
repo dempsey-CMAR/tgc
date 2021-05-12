@@ -13,8 +13,8 @@ column \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
-\item{...}{Columns in \code{dat} to use for grouping in
-\code{dplyr::group_by()}, e.g., \code{DEPTH}.}
+\item{...}{Additional columns in \code{dat} to use as grouping variables.
+Results are automatically grouped by \code{DEPTH}.}
 
 \item{superchill_threshold}{Default is \code{superchill_threshold = -0.7}.
 The first observation below \code{superchill_threshold} triggers the end of
@@ -36,4 +36,7 @@ Identifies when VALUE first crosses below a lower threshold
 \details{
 Identifies TIMESTAMP when VALUE first crosses below threshold for
 each group in \code{...}.
+
+If the VALUE does not cross the threshold for any groups, a dataframe with
+0 rows will be returned.
 }

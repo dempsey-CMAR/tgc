@@ -13,8 +13,8 @@ column \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
-\item{...}{Columns in \code{dat} to use for grouping in
-\code{dplyr::group_by()}, e.g., \code{DEPTH}.}
+\item{...}{Additional columns in \code{dat} to use as grouping variables.
+Results are automatically grouped by \code{DEPTH}.}
 
 \item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
 observation above \code{trend_threshold} that does not return below
@@ -43,5 +43,5 @@ return below the threshold, for each group in \code{...}.
 data("string_data")
 
 string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
-trend_up <- identify_trending_up(string_data, trend_threshold = 4, DEPTH)
+trend_up <- identify_trending_up(string_data, trend_threshold = 4)
 }

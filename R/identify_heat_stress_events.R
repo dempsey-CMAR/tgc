@@ -8,8 +8,8 @@
 #'   intervals for each depth. Heat stress events do not overlap, but they may
 #'   end and start on consecutive timestamps.
 #'
-#'
 #' @inheritParams identify_heat_stress_intervals
+#' @inheritParams count_degree_days
 #'
 #' @return Returns a dataframe with four columns: \code{DEPTH}, \code{event_id},
 #'   \code{stress_start} and \code{stress_end}.
@@ -25,13 +25,15 @@
 
 
 identify_heat_stress_events <- function(dat,
+                                        ...,
                                         heat_threshold = 18,
                                         n_hours = 24){
 
   identify_heat_stress_intervals(dat = dat,
+                                 ...,
                                  heat_threshold = heat_threshold,
                                  n_hours = n_hours) %>%
-    dplyr::group_by(DEPTH) %>%
+    dplyr::group_by(..., DEPTH) %>%
     dplyr::arrange(interval_start, .by_group = TRUE) %>%
     # if this interval overlaps with the next interval, TRUE
     # FALSE indicates the LAST overlap
@@ -49,7 +51,6 @@ identify_heat_stress_events <- function(dat,
         TRUE ~ event_id1
       ),
       # edge cases
-
       event_id3 = case_when(
         # if first interval does not overlap with the second interval
         interval_start == min(interval_start) & overlap == FALSE ~
@@ -65,13 +66,13 @@ identify_heat_stress_events <- function(dat,
       )
     ) %>%
     # find first last and last end of each event
-    dplyr::group_by(DEPTH, event_id3) %>%
+    dplyr::group_by(..., DEPTH, event_id3) %>%
     dplyr::summarise(
       stress_start = min(interval_start),
       stress_end = max(interval_end),
     ) %>%
     dplyr::mutate(event_id = 1:n()) %>%
     dplyr::ungroup() %>%
-    dplyr::select(DEPTH, event_id, stress_start, stress_end)
+    dplyr::select(..., DEPTH, event_id, stress_start, stress_end)
 
 }
