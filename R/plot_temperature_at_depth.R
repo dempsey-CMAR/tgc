@@ -30,19 +30,6 @@ plot_temperature_at_depth <- function(dat,
                                       ncol = 1,
                                       nrow = NULL){
 
-  # # if the facet_var is not a column in dat, stop with error
-  # if(is.character(facet_var)){
-  #
-  #   if(!(facet_var %in% colnames(dat))){
-  #
-  #     stop("facet_var is not a column in dat.
-  #
-  #        HINT: set facet_var = NULL (the default) or
-  #        make sure facet_var is a column name in dat ")
-  #   }
-  #
-  # }
-
   # observations can be duplicated for consecutive seasons.
   # if not faceted by season, remove duplicates
   if("SEASON" %in% colnames(dat)){

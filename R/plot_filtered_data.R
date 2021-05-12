@@ -19,14 +19,6 @@ plot_filtered_data <- function(dat, dat_filtered,
                                superchill_threshold = -0.7,
                                heat_threshold = 18){
 
-  # dat_plot <- dat_filtered %>%
-  #   rbind(
-  #     dat %>%
-  #       anti_join(dat_filtered, ...) %>%
-  #       mutate(DEPTH = 0, SEASON = NA)
-  #   ) %>%
-  #   strings::convert_depth_to_ordered_factor()
-
   dat_plot <- dat_filtered %>%
     # remove observations included in more than one SEASON
     select(-SEASON) %>%
