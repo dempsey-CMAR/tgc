@@ -6,7 +6,6 @@
 \usage{
 filter_growing_seasons(
   dat,
-  ...,
   trend_threshold = 4,
   superchill_threshold = -0.7,
   max_season = 18
@@ -18,9 +17,6 @@ possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
 column \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
-
-\item{...}{Columns in \code{dat} to use for grouping in
-\code{dplyr::group_by()}, e.g., \code{DEPTH}.}
 
 \item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
 observation above \code{trend_threshold} that does not return below

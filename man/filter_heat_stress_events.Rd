@@ -7,10 +7,11 @@
 filter_heat_stress_events(dat, heat_threshold = 18, n_hours = 24)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (POSIXct
-or character in the order year, month, day, hours, minutes, seconds),
-\code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
-must have one unique entry. Other columns will be ignored.}
+\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
+column \code{VARIABLE} is included, it must have one unique entry. May also
+include columns with grouping variables passed to \code{...}. Other columns
+will be ignored.}
 
 \item{heat_threshold}{The threshold to trigger heat stress interval
 (inclusive. Default is \code{heat_threshold = 18}).}
@@ -36,6 +37,7 @@ end and start on consecutive timestamps.
 }
 \seealso{
 Other heat stress: 
-\code{\link{identify_heat_stress_intervals}()}
+\code{\link{identify_heat_stress_intervals}()},
+\code{\link{st_filter_heat_stress_events}()}
 }
 \concept{heat stress}

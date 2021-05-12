@@ -14,15 +14,13 @@
 #' @export
 
 filter_growing_seasons <- function(dat,
-                                  ...,
-                                  trend_threshold = 4,
-                                  superchill_threshold = -0.7,
-                                  max_season = 18){
+                                   trend_threshold = 4,
+                                   superchill_threshold = -0.7,
+                                   max_season = 18){
 
   # table to use to filter and label growing seasons
   season_filters <- identify_growing_seasons(
     dat,
-    ...,
     trend_threshold = trend_threshold,
     superchill_threshold = superchill_threshold,
     max_season = max_season
