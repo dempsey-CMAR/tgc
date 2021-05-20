@@ -1,23 +1,23 @@
-#' @title Calculates temperature in degree-days
+#' @title Count number of degree-days
 #' @details Degree-days = average temperature over \emph{n} days * \emph{n} days
 #'
 #'   \emph{n} is calculated as ...
 #'
+#'   dat is FILTERED DATA
 #'
-#' @param dat Dataframe with at least three columns: \code{TIMESTAMP} (must be
-#'   possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-#'   column \code{VARIABLE} is included, it must have one unique entry. May also
-#'   include columns with grouping variables passed to \code{...}. Other columns
-#'   will be ignored.
+#'   Could put count_growing_days and apply_dd_filters in here
+#'
+#'
+#' @param dat Dataframe with at least three columns: \code{TIMESTAMP} (must
+#'   be possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}.
+#'   If column \code{VARIABLE} is included, it must have one unique entry. May
+#'   also include columns with grouping variables passed to \code{...}. Other
+#'   columns will be ignored.
 #'
 #' @param ... Additional columns in \code{dat} to use as grouping variables.
 #'   Results are automatically grouped by \code{DEPTH}.
 #'
-#' @param heat_threshold The threshold to trigger heat stress interval
-#'   (inclusive. Default is \code{heat_threshold = 18}).
-#'
-#' @param n_hours Length of heat stress interval in hours (default is
-#'   \code{n_hours = 24}).
+#' @param growing_days Data.frame for each group
 #'
 #' @return Returns a tibble with at least five columns: \code{PERIOD} (start and
 #'   end date used to calculate mean temperature and number of days),
@@ -35,38 +35,37 @@
 #' @export
 
 
-count_degree_days <- function(dat,
-                              ...,
-                              heat_threshold = 18,
-                              n_hours = 24){
+count_degree_days <- function(dat, ..., growing_days){
 
   if("VARIABLE" %in% colnames(dat)){
 
     dat <- filter(dat, VARIABLE == "Temperature")
   }
 
-  growing_days <- count_growing_days(dat = dat,
-                                     heat_threshold = heat_threshold,
-                                     n_hours = n_hours)
+  if(!("n_growing_days" %in% colnames(growing_days))) {
 
-  # calculate and return degree-days
+    stop("argument growing days MUST include column n_growing_days.
+
+        HINT: check spelling")
+  }
+
+  # count degree-day for each group
   dat %>%
-    # group by the columns specified in ...
-    group_by(..., DEPTH) %>%
-    mutate(DATE = date(TIMESTAMP)) %>%
+    group_by(..., SEASON, DEPTH) %>%
     summarise(
-      START_DAY = format(min(DATE), "%Y-%b-%d"),
-      END_DAY = format(max(DATE), "%Y-%b-%d"),
       # number of observations in each group
       n_OBSERVATIONS = n(),
-      # number of days in group
-      n_DAYS = length(unique(DATE)),
       # average temperature in group
-      AVG_TEMPERATURE =  round(mean(VALUE), digits = 3)) %>%
-    mutate(DEGREE_DAYS = round(n_DAYS * AVG_TEMPERATURE, digits = 0)) %>%
+      AVG_TEMPERATURE =  round(mean(VALUE), digits = 3)
+    ) %>%
+    left_join(growing_days) %>%
+    mutate(
+      n_degree_days = round(n_growing_days * AVG_TEMPERATURE, digits = 2)
+    ) %>%
     ungroup() %>%
-    select(START_DAY, END_DAY, n_DAYS, everything()) %>%
-    arrange(parse_date_time(START_DAY, orders = "Ymd"))
+    select(..., SEASON, DEPTH,
+           START_SEASON, END_SEASON, TOTAL_DAYS,
+           n_filtered_days, n_growing_days, AVG_TEMPERATURE, n_degree_days)
 
 }
 
