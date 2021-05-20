@@ -2,7 +2,7 @@
 % Please edit documentation in R/st_filter_growing_seasons.R
 \name{st_filter_growing_seasons}
 \alias{st_filter_growing_seasons}
-\title{Keeps observations that occur during growing seasons for multiple stations}
+\title{Keep observations that occur during growing seasons (for multiple stations)}
 \usage{
 st_filter_growing_seasons(
   dat,
@@ -13,29 +13,50 @@ st_filter_growing_seasons(
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
-\item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
-observation above \code{trend_threshold} that does not return below
-\code{trend_threshold} triggers the beginning of the growing season for
-each group in \code{...}.}
+\item{trend_threshold}{The threshold for "trending up". Default is
+\code{trend_threshold = 4}. The last observation above
+\code{trend_threshold} that does not return below \code{trend_threshold}
+triggers the beginning of the growing season for each \code{DEPTH} and
+group in \code{...}.}
 
-\item{superchill_threshold}{Default is \code{superchill_threshold = -0.7}.
-The first observation below \code{superchill_threshold} triggers the end of
-the growing season for each group in \code{...}.}
+\item{superchill_threshold}{The threshold for "superchill". Default is
+\code{superchill_threshold = -0.7}. The first observation below
+\code{superchill_threshold} triggers the end of the growing season for each
+group in \code{DEPTH} and \code{...}.}
 
 \item{max_season}{The length of the growing season in months for groups that
 have no temperature observations below \code{superchill_threshold}.}
 }
 \value{
-Returns dat, filtered for observations that occur during growing
-seasons identified in \code{identify_growing_seasons}, with an additional
-column \code{SEASON} to label the seasons ("S1", "S2", ...). Some
-observations may be duplicated in consecutive seasons.
+Returns \code{dat}, filtered for observations that occur during
+growing seasons identified in \code{identify_growing_seasons}, with an
+additional column \code{SEASON} to label the seasons ("S1", "S2", ...).
+Some observations may be duplicated in consecutive seasons.
 }
 \description{
-Keeps observations that occur during growing seasons for multiple stations
+Keep observations that occur during growing seasons (for multiple stations)
+}
+\details{
+Keeps observations that occur during growing seasons as defined by
+\code{identify_growing_seasons()} (i.e., filters out observations that do
+not occur during the growing seasons).
+
+This function works for one or more \code{STATION}s.
+
+The growing season starts when the temperature crosses
+\code{trend_threshold} and does not return below \code{trend_threshold}
+(e.g., 4-degrees trending up) and ends 1 minute before the first
+observation of \code{superchill_threshold}.
+
+The function looks for \code{START_SEASON} in January to August to avoid
+temperature drops caused by hurricanes (typically in September and October)
+and Winter cooling (November, December).
+
+The function looks for \code{END_SEASON} in January to May of the next year
+(spring superchill).
 }

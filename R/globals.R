@@ -12,16 +12,12 @@ utils::globalVariables(c(
   "SENSOR_NAME",
 
   # count_degree_days
-  "n_DAYS",
   "AVG_TEMPERATURE",
-  "START_DAY",
-  "END_DAY",
-  "PERIOD",
-  "DATE",
   "VARIABLE",
   "TIMESTAMP",
   "VALUE",
   "DEPTH",
+  "n_degree_days",
 
   # filter_days
   "EXCEED_THRESH",
@@ -65,7 +61,12 @@ utils::globalVariables(c(
   # count_growing_days
   "TOTAL_DAYS",
   "n_filtered_days",
-  "n_growing_days"
+  "n_growing_days",
+
+  # check_for_data_gaps
+  "GAP_START",
+  "GAP_LENGTH_HOURS",
+  "GAP_LENGTH_DAYS"
 
 ))
 

@@ -14,25 +14,28 @@ plot_filtered_data(
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
 \item{dat_filtered}{Filtered data, i.e. the result of
 \code{apply_dd_filters(dat)}.}
 
-\item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
-observation above \code{trend_threshold} that does not return below
-\code{trend_threshold} triggers the beginning of the growing season for
-each group in \code{...}.}
+\item{trend_threshold}{The threshold for "trending up". Default is
+\code{trend_threshold = 4}. The last observation above
+\code{trend_threshold} that does not return below \code{trend_threshold}
+triggers the beginning of the growing season for each \code{DEPTH} and
+group in \code{...}.}
 
-\item{superchill_threshold}{Default is \code{superchill_threshold = -0.7}.
-The first observation below \code{superchill_threshold} triggers the end of
-the growing season for each group in \code{...}.}
+\item{superchill_threshold}{The threshold for "superchill". Default is
+\code{superchill_threshold = -0.7}. The first observation below
+\code{superchill_threshold} triggers the end of the growing season for each
+group in \code{DEPTH} and \code{...}.}
 
-\item{heat_threshold}{The threshold to trigger heat stress interval
-(inclusive. Default is \code{heat_threshold = 18}).}
+\item{heat_threshold}{The threshold for heat stress. Default is
+\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+triggers an \code{n-hour} heat stress interval.}
 }
 \value{
 Returns a ggplot object.

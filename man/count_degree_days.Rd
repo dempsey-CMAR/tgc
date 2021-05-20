@@ -2,43 +2,37 @@
 % Please edit documentation in R/count_degree_days.R
 \name{count_degree_days}
 \alias{count_degree_days}
-\title{Calculates temperature in degree-days}
+\title{Count number of degree-days}
 \usage{
-count_degree_days(dat, ..., heat_threshold = 18, n_hours = 24)
+count_degree_days(dat_filt, ..., growing_days)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
-include columns with grouping variables passed to \code{...}. Other columns
-will be ignored.}
+\item{dat_filt}{Dataframe that has been filtered by
+\code{apply_dd_filters()}. Includes columns: \code{...}, \code{SEASON},
+\code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
+must have one unique entry. May also include columns with grouping
+variables passed to \code{...}. Other columns will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
-Results are automatically grouped by \code{DEPTH}.}
+Results are automatically grouped by \code{SEASON} and \code{DEPTH}.}
 
-\item{heat_threshold}{The threshold to trigger heat stress interval
-(inclusive. Default is \code{heat_threshold = 18}).}
-
-\item{n_hours}{Length of heat stress interval in hours (default is
-\code{n_hours = 24}).}
+\item{growing_days}{Data.frame for each group}
 }
 \value{
-Returns a tibble with at least five columns: \code{PERIOD} (start and
-end date used to calculate mean temperature and number of days),
-\code{n_DAYS} (the number of days, \emph{n}, used in the calculation),
-\code{n_OBSERVATIONS} (the number of observations used to calculate the
-average temperature), \code{AVG_TEMPERATURE} (the average temperature in
-the time period), \code{DEGREE_DAYS} (degree-days, the product of
-\code{AVG_TEMPERATURE} and \code{n_DAYS}). Additional columns are returned
-for each grouping variable in \code{...}.
+Returns a tibble with columns:
 }
 \description{
-Calculates temperature in degree-days
+Count number of degree-days
 }
 \details{
 Degree-days = average temperature over \emph{n} days * \emph{n} days
 
-\emph{n} is calculated as ...
+\emph{n} is the number of days suitable for growth (from
+\code{count_growing_days()}).
+
+Results are grouped by \code{SEASON}, \code{DEPTH}, and \code{...}.
+
+*\strong{Could put count_growing_days and apply_dd_filters in here}
 }
 \author{
 Danielle Dempsey

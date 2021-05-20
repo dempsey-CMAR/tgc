@@ -1,19 +1,20 @@
-#' Identifies n-hour intervals beginning when threshold is exceeded
+#' Identify n-hour intervals beginning when threshold is exceeded
 #'
-#' @inheritParams count_degree_days
+#' @inheritParams identify_trending_up
 #'
-#' @param heat_threshold The threshold to trigger heat stress interval
-#'   (inclusive. Default is \code{heat_threshold = 18}).
+#' @param heat_threshold The threshold for heat stress. Default is
+#'   \code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+#'   triggers an \code{n-hour} heat stress interval.
 #'
 #' @param n_hours Length of heat stress interval in hours (default is
 #'   \code{n_hours = 24}).
 #'
-#' @return Returns a dataframe with three columns: \code{DEPTH},
+#' @return Returns a dataframe with columns: \code{...},  \code{DEPTH},
 #'   \code{interval_start} and \code{interval_end}. \code{interval_start}
 #'   indicates the beginning of each heat stress interval, i.e, the
 #'   \code{TIMESTAMP} of all observations where \code{VALUE} is greater than or
-#'   equal to \code{threshold}. \code{interval_end} identifies the end of the
-#'   heat stress interval, i.e., \code{interval_start} + n_hours.
+#'   equal to \code{heat_threshold}. \code{interval_end} identifies the end of
+#'   the heat stress interval, i.e., \code{interval_start} + n_hours.
 #'
 #'   Note: intervals may overlap with previous interval(s).
 #'

@@ -1,17 +1,22 @@
-#' Filters out observations that occur during heat stress events
+#' Filter out observations that occur during heat stress events
 #'
-#' @details Every observation that exceeds the threshold has a corresponding
-#'   heat stress interval (\code{TIMESTAMP} of the observation + n_hours).
-#'   Intervals may overlap with one or more other intervals.
+#' @details Filters out observations that occur during heat stress events, as
+#'   defined by \code{identify_heat_stress_events()}.
+#'
+#'   This function only works for a single \code{STATION}. For multiple
+#'   \code{STATION}s, use \code{st_filter_growing_seasons()}.
+#'
+#'   Every observation that exceeds the threshold has a corresponding heat
+#'   stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals
+#'   may overlap with one or more other intervals.
 #'
 #'   Heat stress events are denoted by the beginning and end of overlapping
 #'   intervals for each depth. Heat stress events do not overlap, but they may
 #'   end and start on consecutive timestamps.
 #'
-#'
 #' @inheritParams identify_heat_stress_intervals
 #'
-#' @return Returns dat, filtered to remove observations that occur during
+#' @return Returns \code{dat}, filtered to remove observations that occur during
 #'   heat stress events.
 #'
 #' @importFrom dplyr filter select

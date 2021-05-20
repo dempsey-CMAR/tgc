@@ -1,14 +1,24 @@
 #' Count number of days that were suitable for growth
 #'
+#' @details Days suitable for growth are days that remain after applying season
+#'   and heat stress filters (\code{apply_dd_filters}).
+#'
+#'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
+#'
 #' @inheritParams apply_dd_filters
 #'
-#' @param ... Additional grouping variables (beside \code{DEPTH}).
+#' @inheritParams identify_trending_up
 #'
-#' @return Returns a tibble with columns: DEPTH, START_SEASON (minimum TIMESTAMP
-#'   for each group), END_SEASON (maximum TIMESTAMP for each group), TOTAL_DAYS
-#'   \code{difftime(END_SEASON, START_SEASON, units = "days")}, n_filtered_days
-#'   (calculated from \code{identify_heat_stress_events}), and n_growing_days
-#'   (TOTAL_DAYS - n_filtered_days).
+#' @param ... Additional columns in \code{dat} to use as grouping variables.
+#'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
+#'
+#' @return Returns a tibble with columns: \code{...}, \code{DEPTH},
+#'   \code{SEASON}, \code{START_SEASON} (minimum TIMESTAMP for each group),
+#'   \code{END_SEASON} (maximum TIMESTAMP for each group), \code{TOTAL_DAYS}
+#'   (\code{difftime(END_SEASON, START_SEASON, units = "days")}),
+#'   \code{n_filtered_days} (calculated from
+#'   \code{identify_heat_stress_events}), and \code{n_growing_days} (TOTAL_DAYS
+#'   - n_filtered_days).
 #'
 #' @importFrom dplyr mutate group_by summarize left_join if_else
 #'
@@ -38,8 +48,8 @@ count_growing_days <- function(dat,
       )
     ) %>%
     group_by(..., DEPTH) %>%
-    summarize(n_filtered_days = sum(n_filtered_days))
-
+    summarize(n_filtered_days = sum(n_filtered_days)) %>%
+    ungroup()
 
   if("STATION" %in% colnames(dat)){
 
@@ -70,6 +80,7 @@ count_growing_days <- function(dat,
     mutate(
       n_filtered_days = if_else(is.na(n_filtered_days), 0, n_filtered_days),
       n_growing_days = round(TOTAL_DAYS - n_filtered_days, digits = 2)
-    )
+    ) %>%
+    ungroup()
 
 }

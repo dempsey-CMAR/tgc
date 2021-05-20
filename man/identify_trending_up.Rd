@@ -2,42 +2,44 @@
 % Please edit documentation in R/identify_trending_up.R
 \name{identify_trending_up}
 \alias{identify_trending_up}
-\title{Identifies when VALUE begins trending up}
+\title{Identify when VALUE begins trending up}
 \usage{
 identify_trending_up(dat, ..., trend_threshold = 4)
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{DEPTH}.}
 
-\item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
-observation above \code{trend_threshold} that does not return below
-\code{trend_threshold} triggers the beginning of the growing season for
-each group in \code{...}.}
+\item{trend_threshold}{The threshold for "trending up". Default is
+\code{trend_threshold = 4}. The last observation above
+\code{trend_threshold} that does not return below \code{trend_threshold}
+triggers the beginning of the growing season for each \code{DEPTH} and
+group in \code{...}.}
 }
 \value{
-Returns the TIMESTAMP (for each group in \code{...}) for the final
-time VALUE exceeds \code{trend_threshold} and does not return below
-\code{trend_threshold}.
+Returns a tibble with the \code{TIMESTAMP} of the final time
+\code{VALUE} exceeds \code{trend_threshold} and does not return below
+\code{trend_threshold} (for each \code{DEPTH} and group in \code{...}).
 
-This TIMESTAMP is passed to \code{identify_growing_seasons()} to denote the
-start of the growing season.
+This \code{TIMESTAMP} is passed to \code{identify_growing_seasons()} to
+denote the start of the growing season.
 
-No row will be returned for groups for which VALUE did not cross
+No row will be returned for groups for which \code{VALUE} did not cross
 \code{trend_threshold}.
 }
 \description{
-Identifies when VALUE begins trending up
+Identify when VALUE begins trending up
 }
 \details{
-Identifies timestamp when value crosses threshold and does not
-return below the threshold, for each group in \code{...}.
+Identifies \code{TIMESTAMP} when \code{VALUE} exceeds threshold and
+does not return below the threshold, for each group in \code{DEPTH} and
+\code{...}.
 }
 \examples{
 data("string_data")

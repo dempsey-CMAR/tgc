@@ -1,18 +1,20 @@
-#' Identifies start and end of non-overlapping heat stress events
+#' Identify start and end of non-overlapping heat stress events
 #'
-#' @details Every observation that exceeds the threshold has a corresponding
-#'   heat stress interval (\code{TIMESTAMP} of the observation + n_hours).
-#'   Intervals may overlap with one or more other intervals.
+#' @details Every observation that exceeds the threshold is assigned an heat
+#'   stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals
+#'   may overlap with one or more other intervals.
 #'
 #'   Heat stress events are denoted by the beginning and end of overlapping
-#'   intervals for each depth. Heat stress events do not overlap, but they may
-#'   end and start on consecutive timestamps.
+#'   intervals for each \code{DEPTH} and group in \code{...}. Heat stress events
+#'   do not overlap, but they may end and start on consecutive
+#'   \code{TIMESTAMP}s.
+#'
+#' @inheritParams identify_trending_up
 #'
 #' @inheritParams identify_heat_stress_intervals
-#' @inheritParams count_degree_days
 #'
-#' @return Returns a dataframe with four columns: \code{DEPTH}, \code{event_id},
-#'   \code{stress_start} and \code{stress_end}.
+#' @return Returns a tibble with columns: \code{...}, \code{DEPTH},
+#'   \code{event_id}, \code{stress_start} and \code{stress_end}.
 #'
 #'   Note: Events for a given depth do not overlap, but \code{event_end} and
 #'   \code{event_start} may be consecutive timestamps.

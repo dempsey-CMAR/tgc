@@ -1,0 +1,62 @@
+#' Check for substantial gaps in the time series
+#'
+#' @inheritParams identify_trending_up
+#'
+#' @param gap_length The length of time in hours to consider a sampling gap.
+#'   Default is \code{gap_length = 2} hours, which is twice the sampling
+#'   interval of the least frequent sensor.
+#'
+#' @param gap_warning The length of time in hours to consider a substantial
+#'   sampling gap. A warning will be printed if any gaps exceed this duration.
+#'   Default is \code{gap_warning = 6} hours.
+#'
+#' @return Returns summary table with \code{GAP_START},\code{GAP_LENGTH_DAYS},
+#'   and \code{GAP_LENGTH_HOURS} for each grouping variable for all intervals
+#'   between observations that exceed \code{gap_length}.
+#'
+#'   A warning will be displayed if any intervals exceed \code{gap_warning}.
+#'
+#' @importFrom dplyr group_by arrange mutate select lead
+#'
+#' @export
+
+
+check_for_data_gaps <- function(dat, ..., gap_length = 2, gap_warning = 6){
+
+  gap_table <- dat %>%
+    group_by(DEPTH, ...) %>%
+    # MUST be in chronological order
+    arrange(TIMESTAMP, .by_group = TRUE) %>%
+    # difference between next observation and this observation in hours
+    mutate(
+      GAP_LENGTH_HOURS = as.numeric(
+        difftime(lead(TIMESTAMP), TIMESTAMP, units = "hours")
+      )
+    ) %>%
+    filter(GAP_LENGTH_HOURS > gap_length) %>%
+    mutate(GAP_LENGTH_DAYS = round(GAP_LENGTH_HOURS / 24, digits = 2),
+           GAP_LENGTH_HOURS = round(GAP_LENGTH_HOURS, digits = 2),
+           GAP_START = TIMESTAMP) %>%
+    select(..., DEPTH, GAP_START, GAP_LENGTH_HOURS, GAP_LENGTH_DAYS)
+
+  if(any(gap_table$GAP_LENGTH_HOURS > gap_warning)){
+
+    n_warning <- nrow(filter(gap_table, GAP_LENGTH_HOURS > gap_warning))
+
+    warning(n_warning, " substantial data gaps found")
+
+  }
+
+  gap_table
+
+}
+
+
+
+
+
+
+
+
+
+

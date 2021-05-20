@@ -2,7 +2,7 @@
 % Please edit documentation in R/st_filter_heat_stress_events.R
 \name{st_filter_heat_stress_events}
 \alias{st_filter_heat_stress_events}
-\title{Filter out heat stress events from multiple stations}
+\title{Filter out heat stress events (from multiple stations)}
 \usage{
 st_filter_heat_stress_events(dat, heat_threshold = 18, n_hours = 24)
 }
@@ -12,8 +12,9 @@ possible to convert to a Date object), \code{DEPTH}, \code{STATION}, and
 \code{VALUE}. If column \code{VARIABLE} is included, it must have one
 unique entry. Other columns will be ignored.}
 
-\item{heat_threshold}{The threshold to trigger heat stress interval
-(inclusive. Default is \code{heat_threshold = 18}).}
+\item{heat_threshold}{The threshold for heat stress. Default is
+\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+triggers an \code{n-hour} heat stress interval.}
 
 \item{n_hours}{Length of heat stress interval in hours (default is
 \code{n_hours = 24}).}
@@ -23,12 +24,17 @@ Returns dat, filtered to remove observations that occur during heat
 stress events.
 }
 \description{
-Filter out heat stress events from multiple stations
+Filter out heat stress events (from multiple stations)
 }
 \details{
-Every observation that exceeds the threshold has a corresponding
-heat stress interval (\code{TIMESTAMP} of the observation + n_hours).
-Intervals may overlap with one or more other intervals.
+Filters out observations that occur during heat stress events, as
+defined by \code{identify_heat_stress_events()}.
+
+This function works for one or more \code{STATION}s.
+
+Every observation that exceeds the threshold has a corresponding heat
+stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals
+may overlap with one or more other intervals.
 
 Heat stress events are denoted by the beginning and end of overlapping
 intervals for each depth. Heat stress events do not overlap, but they may

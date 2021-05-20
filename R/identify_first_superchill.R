@@ -1,23 +1,26 @@
-#' Identifies when VALUE first crosses below a lower threshold
-
-#' @details Identifies TIMESTAMP when VALUE first crosses below threshold for
-#'   each group in \code{...}.
+#' Identify when VALUE first crosses below a lower threshold
 #'
-#'   If the VALUE does not cross the threshold for any groups, a dataframe with
-#'   0 rows will be returned.
+#' @details Identifies \code{TIMESTAMP} when \code{VALUE} first crosses below
+#'   threshold for each group in \code{DEPTH} and \code{...}.
 #'
-#' @inheritParams count_degree_days
-#' @param superchill_threshold Default is \code{superchill_threshold = -0.7}.
-#'   The first observation below \code{superchill_threshold} triggers the end of
-#'   the growing season for each group in \code{...}.
+#'   If the \code{VALUE} does not cross the threshold for any groups, a
+#'   dataframe with 0 rows will be returned.
 #'
-#' @return Returns the TIMESTAMP (for each group in \code{...}) for the first
-#'   time VALUE goes below \code{superchill_threshold}.
+#' @inheritParams identify_trending_up
 #'
-#'   This TIMESTAMP is passed to \code{identify_growing_seasons()} to denote the
-#'   end of the growing season.
+#' @param superchill_threshold The threshold for "superchill". Default is
+#'   \code{superchill_threshold = -0.7}. The first observation below
+#'   \code{superchill_threshold} triggers the end of the growing season for each
+#'   group in \code{DEPTH} and \code{...}.
 #'
-#'   No row will be returned for groups for which VALUE did not cross
+#' @return Returns a tibble with the \code{TIMESTAMP} for oneminute before the
+#'   first time \code{VALUE} goes below \code{superchill_threshold} (for each
+#'   \code{DEPTH} and group in \code{...})..
+#'
+#'   This \code{TIMESTAMP} is passed to \code{identify_growing_seasons()} to
+#'   denote the end of the growing season.
+#'
+#'   No row will be returned for groups for which \code{VALUE} did not cross
 #'   \code{superchill_threshold}.
 #'
 #' @importFrom dplyr arrange mutate filter summarise ungroup

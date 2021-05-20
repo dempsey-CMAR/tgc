@@ -2,38 +2,39 @@
 % Please edit documentation in R/identify_heat_stress_intervals.R
 \name{identify_heat_stress_intervals}
 \alias{identify_heat_stress_intervals}
-\title{Identifies n-hour intervals beginning when threshold is exceeded}
+\title{Identify n-hour intervals beginning when threshold is exceeded}
 \usage{
 identify_heat_stress_intervals(dat, ..., heat_threshold = 18, n_hours = 24)
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{DEPTH}.}
 
-\item{heat_threshold}{The threshold to trigger heat stress interval
-(inclusive. Default is \code{heat_threshold = 18}).}
+\item{heat_threshold}{The threshold for heat stress. Default is
+\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+triggers an \code{n-hour} heat stress interval.}
 
 \item{n_hours}{Length of heat stress interval in hours (default is
 \code{n_hours = 24}).}
 }
 \value{
-Returns a dataframe with three columns: \code{DEPTH},
+Returns a dataframe with columns: \code{...},  \code{DEPTH},
 \code{interval_start} and \code{interval_end}. \code{interval_start}
 indicates the beginning of each heat stress interval, i.e, the
 \code{TIMESTAMP} of all observations where \code{VALUE} is greater than or
-equal to \code{threshold}. \code{interval_end} identifies the end of the
-heat stress interval, i.e., \code{interval_start} + n_hours.
+equal to \code{heat_threshold}. \code{interval_end} identifies the end of
+the heat stress interval, i.e., \code{interval_start} + n_hours.
 
 Note: intervals may overlap with previous interval(s).
 }
 \description{
-Identifies n-hour intervals beginning when threshold is exceeded
+Identify n-hour intervals beginning when threshold is exceeded
 }
 \examples{
 

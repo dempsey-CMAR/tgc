@@ -15,35 +15,38 @@ apply_dd_filters(
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
-\item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
-observation above \code{trend_threshold} that does not return below
-\code{trend_threshold} triggers the beginning of the growing season for
-each group in \code{...}.}
+\item{trend_threshold}{The threshold for "trending up". Default is
+\code{trend_threshold = 4}. The last observation above
+\code{trend_threshold} that does not return below \code{trend_threshold}
+triggers the beginning of the growing season for each \code{DEPTH} and
+group in \code{...}.}
 
-\item{superchill_threshold}{Default is \code{superchill_threshold = -0.7}.
-The first observation below \code{superchill_threshold} triggers the end of
-the growing season for each group in \code{...}.}
+\item{superchill_threshold}{The threshold for "superchill". Default is
+\code{superchill_threshold = -0.7}. The first observation below
+\code{superchill_threshold} triggers the end of the growing season for each
+group in \code{DEPTH} and \code{...}.}
 
 \item{max_season}{The length of the growing season in months for groups that
 have no temperature observations below \code{superchill_threshold}.}
 
-\item{heat_threshold}{The threshold to trigger heat stress interval
-(inclusive. Default is \code{heat_threshold = 18}).}
+\item{heat_threshold}{The threshold for heat stress. Default is
+\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+triggers an \code{n-hour} heat stress interval.}
 
 \item{n_hours}{Length of heat stress interval in hours (default is
 \code{n_hours = 24}).}
 }
 \value{
 Returns \code{dat} filtered for days that will be used to calculate
-degree-days at DEPTH. Includes observations that start after the 4-degree
-trending up threshold and end 1 minute before the first observation
-superchill for each season; observations that occur during a heat stress
-events are removed.
+degree-days at \code{DEPTH}. Includes observations that start after the
+4-degree trending up threshold and end 1 minute before the first
+observation superchill for each season; observations that occur during a
+heat stress events are removed.
 
 An additional column \code{SEASON} is included to label the growing seasons
 ("S1", "S2", ...). Some observations may be duplicated in consecutive

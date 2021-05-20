@@ -1,17 +1,19 @@
 #' Apply filters to prepare data for degree-day calculation
 #'
 #' @inheritParams identify_heat_stress_intervals
+#'
 #' @inheritParams filter_growing_seasons
 #'
 #' @return Returns \code{dat} filtered for days that will be used to calculate
-#'   degree-days at DEPTH. Includes observations that start after the 4-degree
-#'   trending up threshold and end 1 minute before the first observation
-#'   superchill for each season; observations that occur during a heat stress
-#'   events are removed.
+#'   degree-days at \code{DEPTH}. Includes observations that start after the
+#'   4-degree trending up threshold and end 1 minute before the first
+#'   observation superchill for each season; observations that occur during a
+#'   heat stress events are removed.
 #'
 #'   An additional column \code{SEASON} is included to label the growing seasons
 #'   ("S1", "S2", ...). Some observations may be duplicated in consecutive
 #'   seasons.
+#'
 #' @export
 
 
@@ -32,6 +34,8 @@ apply_dd_filters <- function(dat,
   # if there is only one station, use regular filter functions; otherwise use st_filter functions
   if(n_stations == 1){
 
+    gaps <- check_for_data_gaps(dat)
+
     dat %>%
       filter_growing_seasons(
         trend_threshold = trend_threshold,
@@ -44,6 +48,8 @@ apply_dd_filters <- function(dat,
       )
 
   } else {
+
+    gaps <- check_for_data_gaps(dat, STATION)
 
     dat %>%
       st_filter_growing_seasons(

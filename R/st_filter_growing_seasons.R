@@ -1,11 +1,30 @@
-#' Keeps observations that occur during growing seasons for multiple stations
+#' Keep observations that occur during growing seasons (for multiple stations)
+#'
+#' @details Keeps observations that occur during growing seasons as defined by
+#'   \code{identify_growing_seasons()} (i.e., filters out observations that do
+#'   not occur during the growing seasons).
+#'
+#'   This function works for one or more \code{STATION}s.
+#'
+#'   The growing season starts when the temperature crosses
+#'   \code{trend_threshold} and does not return below \code{trend_threshold}
+#'   (e.g., 4-degrees trending up) and ends 1 minute before the first
+#'   observation of \code{superchill_threshold}.
+#'
+#'   The function looks for \code{START_SEASON} in January to August to avoid
+#'   temperature drops caused by hurricanes (typically in September and October)
+#'   and Winter cooling (November, December).
+#'
+#'   The function looks for \code{END_SEASON} in January to May of the next year
+#'   (spring superchill).
 #'
 #' @inheritParams identify_growing_seasons
-#' @return Returns dat, filtered for observations that occur during growing
-#'   seasons identified in \code{identify_growing_seasons}, with an additional
-#'   column \code{SEASON} to label the seasons ("S1", "S2", ...). Some
-#'   observations may be duplicated in consecutive seasons.
-
+#'
+#' @return Returns \code{dat}, filtered for observations that occur during
+#'   growing seasons identified in \code{identify_growing_seasons}, with an
+#'   additional column \code{SEASON} to label the seasons ("S1", "S2", ...).
+#'   Some observations may be duplicated in consecutive seasons.
+#'
 #' @export
 
 st_filter_growing_seasons <- function(dat,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/identify_growing_seasons.R
 \name{identify_growing_seasons}
 \alias{identify_growing_seasons}
-\title{Identifies start and end of growing seasons for each year}
+\title{Identify start and end of growing seasons for each year}
 \usage{
 identify_growing_seasons(
   dat,
@@ -14,38 +14,40 @@ identify_growing_seasons(
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
-possible to convert to a Date object), \code{DEPTH}, and \code{VALUE}. If
-column \code{VARIABLE} is included, it must have one unique entry. May also
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
 will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{DEPTH}.}
 
-\item{trend_threshold}{Default is \code{trend_threshold = 4}. The last
-observation above \code{trend_threshold} that does not return below
-\code{trend_threshold} triggers the beginning of the growing season for
-each group in \code{...}.}
+\item{trend_threshold}{The threshold for "trending up". Default is
+\code{trend_threshold = 4}. The last observation above
+\code{trend_threshold} that does not return below \code{trend_threshold}
+triggers the beginning of the growing season for each \code{DEPTH} and
+group in \code{...}.}
 
-\item{superchill_threshold}{Default is \code{superchill_threshold = -0.7}.
-The first observation below \code{superchill_threshold} triggers the end of
-the growing season for each group in \code{...}.}
+\item{superchill_threshold}{The threshold for "superchill". Default is
+\code{superchill_threshold = -0.7}. The first observation below
+\code{superchill_threshold} triggers the end of the growing season for each
+group in \code{DEPTH} and \code{...}.}
 
 \item{max_season}{The length of the growing season in months for groups that
 have no temperature observations below \code{superchill_threshold}.}
 }
 \value{
 Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}
-for each group in \code{...}.
+for each group in \code{DEPTH} and group in \code{...}.
 }
 \description{
-Identifies start and end of growing seasons for each year
+Identify start and end of growing seasons for each year
 }
 \details{
-For each group in \code{...}, the growing season starts when the
-temperature crosses \code{trend_threshold} and does not return below
-\code{trend_threshold} (e.g., 4-degrees trending up) and ends 1 minute
-before the first observation of \code{superchill_threshold}.
+The growing season starts when the temperature crosses
+\code{trend_threshold} and does not return below \code{trend_threshold}
+(e.g., 4-degrees trending up) and ends 1 minute before the first
+observation of \code{superchill_threshold}.
 
 The function looks for \code{START_SEASON} in January to August to avoid
 temperature drops caused by hurricanes (typically in September and October)
@@ -55,18 +57,14 @@ The function looks for \code{END_SEASON} in January to May of the next year
 (spring superchill).
 
 If the time series begins when the temperature is above
-\code{trend_threshold}, \code{START_SEASON} will be \code{NA}.
-\code{START_SEASON} will be assigned the minimum \code{TIMESTAMP} for the
-group in \code{filter_growing_season()}.
+\code{trend_threshold}, \code{START_SEASON} is assigned the minimum
+\code{TIMESTAMP} for the group in \code{filter_growing_season()}.
 
 If the time series does not go below \code{superchill_threshold}, the
 growing season is assumed to be \code{max_season} months long.
-\code{END_SEASON} is assigned the the timestamp \code{START_SEASON} +
+\code{END_SEASON} is assigned the timestamp \code{START_SEASON} +
 \code{months(max_season)}.
 
 Growing seasons may overlap if \code{max_season} is used to determine
 \code{END_SEASON}.
-
-If \code{START_SEASON} and \code{END_SEASON} are both \code{NA} for a
-group, there will be no row for this group in the output.
 }

@@ -1,8 +1,13 @@
-#' Filter out heat stress events from multiple stations
+#' Filter out heat stress events (from multiple stations)
 #'
-#' @details Every observation that exceeds the threshold has a corresponding
-#'   heat stress interval (\code{TIMESTAMP} of the observation + n_hours).
-#'   Intervals may overlap with one or more other intervals.
+#' @details Filters out observations that occur during heat stress events, as
+#'   defined by \code{identify_heat_stress_events()}.
+#'
+#'   This function works for one or more \code{STATION}s.
+#'
+#'   Every observation that exceeds the threshold has a corresponding heat
+#'   stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals
+#'   may overlap with one or more other intervals.
 #'
 #'   Heat stress events are denoted by the beginning and end of overlapping
 #'   intervals for each depth. Heat stress events do not overlap, but they may
