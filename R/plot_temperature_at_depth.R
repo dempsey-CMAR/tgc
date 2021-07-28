@@ -2,16 +2,20 @@
 #'
 #' @inheritParams identify_heat_stress_intervals
 #' @inheritParams filter_growing_seasons
+#'
 #' @param facet_var Variable(s) defining faceting groups. Variables must be
 #'   column(s) in \code{dat}). For a single facet variable: \code{facet_var =
 #'   "SEASON"}. For more than one facet variables: \code{facet_var = "SEASON +
 #'   DEPTH"}. Default is \code{facet_var = NULL}.
 #'
 #' @param ncol Number of columns for faceted figure. Default is \code{ncol = 1}.
+#'
 #' @param nrow Number of rows for faceted figure. Default is \code{nrow = NULL}.
 #'
+#' @param alpha Transparency for the heat stress and superchill shaded boxes.
+#'
 #' @return ggplot object
-
+#'
 #' @import ggplot2
 #' @importFrom stringr str_detect
 #' @importFrom stats as.formula
@@ -28,7 +32,8 @@ plot_temperature_at_depth <- function(dat,
                                       heat_threshold = 18,
                                       facet_var = NULL,
                                       ncol = 1,
-                                      nrow = NULL){
+                                      nrow = NULL,
+                                      alpha = 1){
 
   # observations can be duplicated for consecutive seasons.
   # if not faceted by season, remove duplicates
@@ -42,7 +47,7 @@ plot_temperature_at_depth <- function(dat,
 
     if(is.character(facet_var)) {
 
-      if(isFALSE(str_detect(facet_var, "SEASON"))){
+      if(isFALSE(stringr::str_detect(facet_var, "SEASON"))){
         dat <- dat %>%
           select(-SEASON) %>%
           distinct()
@@ -56,16 +61,24 @@ plot_temperature_at_depth <- function(dat,
   color.pal <- strings::get_colour_palette(dat)
 
   p <- ggplot(dat, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
+    annotate("rect",
+             xmin = as_datetime(-Inf), xmax = as_datetime(Inf),
+             ymin = heat_threshold,  ymax = Inf,
+             fill = "#FB9A99", alpha = alpha) +
+    annotate("rect",
+             xmin = as_datetime(-Inf), xmax = as_datetime (Inf),
+             ymin = -Inf, ymax = superchill_threshold,
+             fill = "#A6CEE3",  alpha = alpha) +
     geom_point(size = 0.25) +
     scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)"))) +
-    scale_colour_manual(name = "Depth",
+    scale_colour_manual(name = "Depth (m)",
                         values = color.pal,
                         drop = FALSE) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
-    geom_hline(yintercept = superchill_threshold, col = "deepskyblue", lty = 2) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
-    geom_hline(yintercept = heat_threshold, col = "red", lty = 2) +
-    theme_light()
+    theme_light() +
+    theme(strip.background = element_rect(fill = NA),
+          strip.text = element_text(color = "black", hjust = 0))
 
   if(is.null(facet_var)){
 
@@ -73,8 +86,9 @@ plot_temperature_at_depth <- function(dat,
 
     p <- p +
       scale_x_datetime(
-        breaks = axis.breaks$date.breaks.major,
-        minor_breaks = axis.breaks$date.breaks.minor,
+        name = "Date",
+        date_breaks = axis.breaks$date.breaks.major,
+        date_minor_breaks = axis.breaks$date.breaks.minor,
         date_labels =  axis.breaks$date.labels.format
       )
   }
@@ -85,7 +99,9 @@ plot_temperature_at_depth <- function(dat,
     facet_var <- as.formula(paste("~", facet_var))
 
     p <- p +
-      facet_wrap(facet_var, ncol = ncol, nrow = nrow)
+      facet_wrap(facet_var, ncol = ncol, nrow = nrow,
+                 labeller = label_wrap_gen(multi_line=FALSE)) +
+      scale_x_datetime(name = "Date")
   }
 
   p

@@ -11,7 +11,8 @@ plot_temperature_at_depth(
   heat_threshold = 18,
   facet_var = NULL,
   ncol = 1,
-  nrow = NULL
+  nrow = NULL,
+  alpha = 1
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ column(s) in \code{dat}). For a single facet variable: \code{facet_var =
 \item{ncol}{Number of columns for faceted figure. Default is \code{ncol = 1}.}
 
 \item{nrow}{Number of rows for faceted figure. Default is \code{nrow = NULL}.}
+
+\item{alpha}{Transparency for the heat stress and superchill shaded boxes.}
 }
 \value{
 ggplot object
