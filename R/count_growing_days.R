@@ -54,12 +54,14 @@ count_growing_days <- function(dat,
   if("STATION" %in% colnames(dat)){
 
     dat_out <- dat %>%
+      # groups by STATION
       st_filter_growing_seasons(trend_threshold = trend_threshold,
                                 superchill_threshold = superchill_threshold,
                                 max_season = max_season)
   } else{
 
     dat_out <- dat %>%
+      # ignores STATION column
       filter_growing_seasons(trend_threshold = trend_threshold,
                              superchill_threshold = superchill_threshold,
                              max_season = max_season)
@@ -79,7 +81,11 @@ count_growing_days <- function(dat,
     left_join(filtered_days) %>%
     mutate(
       n_filtered_days = if_else(is.na(n_filtered_days), 0, n_filtered_days),
-      n_growing_days = round(TOTAL_DAYS - n_filtered_days, digits = 2)
+
+      n_growing_days = round(TOTAL_DAYS - n_filtered_days, digits = 2),
+
+      TOTAL_DAYS = round(TOTAL_DAYS, digits = 2),
+      n_filtered_days = round(n_filtered_days, digits = 2)
     ) %>%
     ungroup()
 
