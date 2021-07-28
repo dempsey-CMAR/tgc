@@ -42,8 +42,6 @@ st_filter_growing_seasons <- function(dat,
 
     station.i <- stations[i]
 
-   # print("st_filter_growing_seasons(): filtering station", station.i)
-
     dat.i <- filter(dat, STATION == station.i)
 
     st_dat_filtered[[i]] <- filter_growing_seasons(
