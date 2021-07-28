@@ -9,7 +9,8 @@ plot_filtered_data(
   dat_filtered,
   trend_threshold = 4,
   superchill_threshold = -0.7,
-  heat_threshold = 18
+  heat_threshold = 18,
+  alpha = 1
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ group in \code{DEPTH} and \code{...}.}
 \item{heat_threshold}{The threshold for heat stress. Default is
 \code{heat_threshold = 18}). Every observation above \code{heat_threshold}
 triggers an \code{n-hour} heat stress interval.}
+
+\item{alpha}{Transparency for the heat stress and superchill shaded boxes.}
 }
 \value{
 Returns a ggplot object.

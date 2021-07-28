@@ -2,6 +2,7 @@
 #'
 #' @inheritParams identify_growing_seasons
 #' @inheritParams identify_heat_stress_intervals
+#' @inheritParams plot_temperature_at_depth
 #' @param dat_filtered Filtered data, i.e. the result of
 #'   \code{apply_dd_filters(dat)}.
 #'
@@ -17,7 +18,8 @@
 plot_filtered_data <- function(dat, dat_filtered,
                                trend_threshold = 4,
                                superchill_threshold = -0.7,
-                               heat_threshold = 18){
+                               heat_threshold = 18,
+                               alpha = 1){
 
   dat_plot <- dat_filtered %>%
     # remove observations included in more than one SEASON
@@ -32,12 +34,22 @@ plot_filtered_data <- function(dat, dat_filtered,
     strings::convert_depth_to_ordered_factor()
   levels(dat_plot$DEPTH)[1] <- "Filtered"
 
-  color.pal <- strings::get_colour_palette(dat_plot)
-  color.pal <- c("grey", color.pal)
+  color_pal <- strings::get_colour_palette(dat_plot)
+  color_pal <- c("grey", color_pal)
 
   axis_breaks <- strings::get_xaxis_breaks(dat_plot)
 
   ggplot(dat_plot, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
+
+    annotate("rect",
+             xmin = as_datetime(-Inf), xmax = as_datetime(Inf),
+             ymin = heat_threshold,  ymax = Inf,
+             fill = "#FB9A99", alpha = alpha) +
+    annotate("rect",
+             xmin = as_datetime(-Inf), xmax = as_datetime (Inf),
+             ymin = -Inf, ymax = superchill_threshold,
+             fill = "#A6CEE3",  alpha = alpha) +
+
     geom_point(size = 0.25) +
 
     scale_x_datetime(breaks = axis_breaks$date.breaks.major,
@@ -45,11 +57,11 @@ plot_filtered_data <- function(dat, dat_filtered,
                      date_labels =  axis_breaks$date.labels.format) +
     scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)"))) +
     scale_colour_manual(name = "Depth",
-                        values = color.pal,
+                        values = color_pal,
                         drop = FALSE) +
-    geom_hline(yintercept = superchill_threshold, col = "deepskyblue", lty = 2) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
-    geom_hline(yintercept = heat_threshold, col = "red", lty = 2) +
+    # geom_hline(yintercept = superchill_threshold, col = "deepskyblue", lty = 2) +
+    # geom_hline(yintercept = heat_threshold, col = "red", lty = 2) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
     theme_light()
 
