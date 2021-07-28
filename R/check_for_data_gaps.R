@@ -23,8 +23,13 @@
 
 check_for_data_gaps <- function(dat, ..., gap_length = 2, gap_warning = 6){
 
+
+  # to make sure all groups get assigned a value (even if no data gaps)
+  out_table <- dat %>% distinct(..., DEPTH)
+
+
   gap_table <- dat %>%
-    group_by(DEPTH, ...) %>%
+    group_by(..., DEPTH) %>%
     # MUST be in chronological order
     arrange(TIMESTAMP, .by_group = TRUE) %>%
     # difference between next observation and this observation in hours
@@ -37,7 +42,12 @@ check_for_data_gaps <- function(dat, ..., gap_length = 2, gap_warning = 6){
     mutate(GAP_LENGTH_DAYS = round(GAP_LENGTH_HOURS / 24, digits = 2),
            GAP_LENGTH_HOURS = round(GAP_LENGTH_HOURS, digits = 2),
            GAP_START = TIMESTAMP) %>%
-    select(..., DEPTH, GAP_START, GAP_LENGTH_HOURS, GAP_LENGTH_DAYS)
+    select(..., DEPTH, GAP_START, GAP_LENGTH_HOURS, GAP_LENGTH_DAYS) %>%
+    ungroup() %>%
+    right_join(out_table) %>%
+    mutate(
+      GAP_LENGTH_HOURS = if_else(is.na(GAP_LENGTH_HOURS), 0, GAP_LENGTH_HOURS),
+      GAP_LENGTH_DAYS = if_else(is.na(GAP_LENGTH_DAYS), 0, GAP_LENGTH_DAYS))
 
   if(any(gap_table$GAP_LENGTH_HOURS > gap_warning)){
 
