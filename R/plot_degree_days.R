@@ -27,17 +27,18 @@ plot_degree_days <- function(dd_table,
 
   col_pal <- strings::get_colour_palette(dd_table)
 
-  p <- ggplot(dd_table, aes(x = START_SEASON, y = n_degree_days)) +
-    geom_point(shape = 21, col = "darkgrey", aes(fill = DEPTH)) +
-    geom_line(aes(col = DEPTH), show.legend = FALSE) +
-    scale_fill_manual(name = "Depth", values = col_pal) +
-    scale_colour_manual(values = col_pal) +
-    guides(fill = guide_legend(override.aes = list(size = 4))) +
-    theme_light()
+  p <- ggplot(dd_table, aes(x = START_SEASON, y = n_degree_days, col = DEPTH)) +
+    geom_point(size = 2) +
+    geom_line(show.legend = FALSE) +
+    scale_colour_manual(name = "Depth (m)", values = col_pal) +
+    guides(col = guide_legend(override.aes = list(size = 4))) +
+    theme_light() +
+    theme(strip.background = element_rect(fill = NA),
+          strip.text = element_text(color = "black", hjust = 0))
 
   if(is.null(facet_var)){
 
-    axis.breaks <- strings::get_xaxis_breaks(dat)
+    axis.breaks <- strings::get_xaxis_breaks(dd_table)
 
     p <- p +
       scale_x_datetime(
