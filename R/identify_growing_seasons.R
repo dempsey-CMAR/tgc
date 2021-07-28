@@ -29,7 +29,10 @@
 #' @inheritParams identify_first_superchill
 #'
 #' @param max_season The length of the growing season in months for groups that
-#'   have no temperature observations below \code{superchill_threshold}.
+#'   have no temperature observations below \code{superchill_threshold}. Default
+#'   is \code{max_season = 540} days (~18 months). Note: units are days because
+#'   adding 18 months to August 30 or August 31 results in \code{NA} (because
+#'   February 30 and February 31 are not real dates).
 #'
 #' @return Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}
 #'   for each group in \code{DEPTH} and group in \code{...}.
@@ -44,7 +47,7 @@ identify_growing_seasons <- function(dat,
                                      ...,
                                      trend_threshold = 4,
                                      superchill_threshold = -0.7,
-                                     max_season = 18){
+                                     max_season = 540){
 
   dat <- dat %>%
     mutate(YEAR = lubridate::year(TIMESTAMP),
@@ -75,11 +78,15 @@ identify_growing_seasons <- function(dat,
     full_join(season_start) %>%
     full_join(season_end) %>%
     mutate(
-     # START_SEASON = START_TREND,
+      # when there is an END_SEASON (from superchill) but no start season
+      ## (no data from the year before, e.g., Madeline Point)
+      MIN_TIMESTAMP = case_when(is.na(MIN_TIMESTAMP) ~ min(dat$TIMESTAMP),
+                                TRUE ~ MIN_TIMESTAMP),
+      # if temperature never crosses 4-degree threshold, use minimum TIMESTAMP
       START_SEASON = case_when(is.na(START_TREND) ~ MIN_TIMESTAMP,
         TRUE ~ START_TREND
       ),
-
+      # if temperature never crosses superchill threshold, use set duration for season
       END_SEASON = case_when(
         is.na(FIRST_CHILL) ~ START_SEASON + months(max_season),
         TRUE ~ as_datetime(FIRST_CHILL)
