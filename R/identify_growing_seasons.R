@@ -37,8 +37,9 @@
 #' @return Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}
 #'   for each group in \code{DEPTH} and group in \code{...}.
 #'
-#' @importFrom lubridate as_date minutes year month
+#' @importFrom lubridate as_date minutes year month days
 #' @importFrom dplyr filter full_join mutate group_by arrange select
+#' @importFrom purrr map_df
 #'
 #' @export
 
@@ -74,7 +75,7 @@ identify_growing_seasons <- function(dat,
     mutate(YEAR = YEAR - 1)
 
   # join by YEAR and columns in ...
-  season_table %>%
+  season_table <- season_table %>%
     full_join(season_start) %>%
     full_join(season_end) %>%
     mutate(
@@ -88,15 +89,43 @@ identify_growing_seasons <- function(dat,
       ),
       # if temperature never crosses superchill threshold, use set duration for season
       END_SEASON = case_when(
-        is.na(FIRST_CHILL) ~ START_SEASON + months(max_season),
+        is.na(FIRST_CHILL) ~ START_SEASON + days(max_season),
         TRUE ~ as_datetime(FIRST_CHILL)
       )
     ) %>%
     group_by(..., YEAR) %>%
-    mutate(SEASON = cur_group_id(),
-           SEASON = paste0("S", SEASON)) %>%
+    mutate(ID = cur_group_id(),
+           SEASON = paste0("S", ID)) %>%  # does not reset to 1 for each STATION; see loop below
     ungroup() %>%
     select(..., SEASON, DEPTH, START_SEASON, END_SEASON) %>%
     arrange(..., SEASON, DEPTH)
+
+
+  # loop over each STATION and assign seasons starting at S1
+  if("STATION" %in% colnames(dat)){
+
+    stations <- unique(dat$STATION)
+
+    if(length(stations) > 1) {
+
+      table_out <- list()
+
+      for(i in seq_along(stations)){
+
+        table_out[[i]] <- season_table %>%
+          filter(STATION == stations[i]) %>%
+          group_by(SEASON) %>%
+          mutate(ID = cur_group_id(), SEASON = paste0("S", ID)) %>%
+          select(-ID) %>%
+          ungroup()
+      }
+
+      season_table <- table_out %>% map_df(rbind)
+    }
+
+  }
+
+  season_table
+
 
 }
