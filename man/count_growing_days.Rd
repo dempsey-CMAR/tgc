@@ -9,7 +9,8 @@ count_growing_days(
   ...,
   trend_threshold = 4,
   superchill_threshold = -0.7,
-  max_season = 18,
+  max_season = 540,
+  full_season = TRUE,
   heat_threshold = 18,
   n_hours = 24
 )
@@ -36,7 +37,20 @@ group in \code{...}.}
 group in \code{DEPTH} and \code{...}.}
 
 \item{max_season}{The length of the growing season in months for groups that
-have no temperature observations below \code{superchill_threshold}.}
+have no temperature observations below \code{superchill_threshold}. Default
+is \code{max_season = 540} days (~18 months). Note: units are days because
+adding 18 months to August 30 or August 31 results in \code{NA} (because
+February 30 and February 31 are not real dates).}
+
+\item{full_season}{Logical argument. The default, \code{full_season = TRUE}
+will only return data for groups with a full season of data (e.g.,
+\code{START_SEASON} and \code{END_SEASON} as returned by
+\code{identify_growing_seasons(dat, full_season = TRUE)} are both NOT
+\code{NA}).
+
+If \code{full_season = FALSE}, data for all groups will be returned;
+the \code{START_SEASON} and \code{END_SEASON} dates default to the first
+and last timestamp in \code{...} and \code{DEPTH}.}
 
 \item{heat_threshold}{The threshold for heat stress. Default is
 \code{heat_threshold = 18}). Every observation above \code{heat_threshold}
@@ -64,9 +78,4 @@ Days suitable for growth are days that remain after applying season
 and heat stress filters (\code{apply_dd_filters}).
 
 Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
-}
-\examples{
-data(string_data)
-string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
-count_growing_days(string_data)
 }

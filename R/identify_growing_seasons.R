@@ -34,6 +34,16 @@
 #'   adding 18 months to August 30 or August 31 results in \code{NA} (because
 #'   February 30 and February 31 are not real dates).
 #'
+#' @param full_season Logical argument. The default, \code{full_season = TRUE}
+#'   will return \code{NA} for \code{START_SEASON} and \code{END_SEASON} that
+#'   occur outside of the date range of the data series. For example, if the
+#'   data series starts when temperature is already above
+#'   \code{trend_threshold}, \code{START_SEASON = NA}; if the season length is
+#'   determined by \code{max_season}, which results in a date after the last
+#'   observation, \code{END_SEASON = NA}. If \code{full_season = FALSE}, the
+#'   \code{START_SEASON} and \code{END_SEASON} dates default to the first and
+#'   last timestamp in \code{...} and \code{DEPTH}.
+#'
 #' @return Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}
 #'   for each group in \code{DEPTH} and group in \code{...}.
 #'
@@ -46,6 +56,7 @@
 
 identify_growing_seasons <- function(dat,
                                      ...,
+                                     full_season = TRUE,
                                      trend_threshold = 4,
                                      superchill_threshold = -0.7,
                                      max_season = 540){
@@ -57,23 +68,24 @@ identify_growing_seasons <- function(dat,
   # if start/end season are outside of data series range, assign to first/last timestamp
   season_table <- dat %>%
     group_by(..., DEPTH) %>%
-    # max timestamp for each STATION & DEPTH (to constrain end date for final season without superchill)
+    # max timestamp for each STATION & DEPTH
+    # (to constrain end date for final season without superchill)
     mutate(MAX_TIMESTAMP = max(TIMESTAMP)) %>%
     ungroup() %>%
     group_by(..., YEAR, DEPTH, MAX_TIMESTAMP) %>%
-    # min timestamp for each STATION, YEAR & DEPTH (start date for seasons with data already above trend_thresh)
+    # min timestamp for each STATION, YEAR & DEPTH
+    # (optional start date for seasons with data series that begins above trend_thresh)
     summarize(MIN_TIMESTAMP = min(TIMESTAMP)) %>%
     ungroup()
 
+  # filter to avoid when Temperature crosses the threshold
+  # after a hurricane (Sept, Oct) or when trending down (Nov - Dec)
   season_start <- dat %>%
-    # filter to avoid when Temperature crosses the threshold
-    # after a hurricane (Sept, Oct) or when trending down (Nov - Dec)
     filter(MONTH <= 8) %>%
-    identify_trending_up(YEAR, ...,
-                         trend_threshold = trend_threshold)
+    identify_trending_up(YEAR, ..., trend_threshold = trend_threshold)
 
+  # filter to ensure identifying Spring superchill (not winter cold temps)
   season_end <- dat %>%
-    # filter to ensure identifying Spring superchill (not winter cold temps)
     filter(MONTH <= 5) %>%
     identify_first_superchill(YEAR, ...,
                               superchill_threshold = superchill_threshold) %>%
@@ -83,8 +95,10 @@ identify_growing_seasons <- function(dat,
 
 
   season_table <- season_table %>%
-    full_join(season_start) %>%      # this could be a left_join
-    full_join(season_end) %>%       # this needs to be a full_join for data series that begin at the END of a season
+    # this could be a left_join (?)
+    full_join(season_start) %>%
+    # this needs to be a full_join for data series that begin at the END of a season
+    full_join(season_end) %>%
     group_by(...) %>%
     # assign MIN_ and MAX_ TIMESTAMP values to NAs resulting from the joins
     # e.g., when time series starts at the END of a season (Tickle Island)
@@ -103,22 +117,36 @@ identify_growing_seasons <- function(dat,
     ) %>%
     select(-MIN_TIMESTAMP_NA, -MAX_TIMESTAMP_NA) %>%
     ungroup() %>%
-    # assign start and end season dates
     mutate(
-      # if temperature never crosses 4-degree threshold, use minimum TIMESTAMP
-      START_SEASON = if_else(
-        is.na(START_TREND), MIN_TIMESTAMP, START_TREND
-      ),
+      START_SEASON = START_TREND,
       # if temperature never crosses superchill threshold, use set duration for season
       END_SEASON = if_else(
         is.na(FIRST_CHILL), START_SEASON + days(max_season), as_datetime(FIRST_CHILL)
       ),
-      # if END_SEASON is out of the max data range, assign the max TIMESTAMP
-      END_SEASON = if_else(END_SEASON > MAX_TIMESTAMP, MAX_TIMESTAMP, END_SEASON)
+      # if END_SEASON is out of the max data range, assign NA
+      END_SEASON = if_else(
+        END_SEASON > MAX_TIMESTAMP, as_datetime(NA_character_), END_SEASON
+      )
+    )
 
-    ) %>%
+  if(isFALSE(full_season)){
+
+    season_table <- season_table %>%
+      mutate(
+        # if temperature never crosses 4-degree threshold, use minimum TIMESTAMP
+        START_SEASON = if_else(
+          is.na(START_TREND), MIN_TIMESTAMP, START_TREND
+        ),
+
+        # if END_SEASON is out of the max data range, assign the max TIMESTAMP
+        END_SEASON = if_else(END_SEASON > MAX_TIMESTAMP, MAX_TIMESTAMP, END_SEASON)
+      )
+  }
+
+  # label seasons based on group ID (does not reset to S1 for each STATION; see loop below)
+  season_table <- season_table %>%
+    # na.omit() %>%
     group_by(..., YEAR) %>%
-    # label seasons (does not reset to 1 for each STATION; see loop below)
     mutate(ID = cur_group_id(),
            SEASON = paste0("S", ID)) %>%
     ungroup() %>%
@@ -151,6 +179,4 @@ identify_growing_seasons <- function(dat,
   }
 
   season_table
-
-
 }

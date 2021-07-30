@@ -2,7 +2,7 @@
 #'
 #' @inheritParams identify_heat_stress_intervals
 #'
-#' @inheritParams filter_growing_seasons
+#' @inheritParams filter_in_growing_seasons
 #'
 #' @return Returns \code{dat} filtered for days that will be used to calculate
 #'   degree-days at \code{DEPTH}. Includes observations that start after the
@@ -20,7 +20,8 @@
 apply_dd_filters <- function(dat,
                              trend_threshold = 4,
                              superchill_threshold = -0.7,
-                             max_season = 18,
+                             max_season = 540,
+                             full_season = TRUE,
                              heat_threshold = 18,
                              n_hours = 24){
 
@@ -37,12 +38,13 @@ apply_dd_filters <- function(dat,
     gaps <- check_for_data_gaps(dat)
 
     dat %>%
-      filter_growing_seasons(
+      filter_in_growing_seasons(
         trend_threshold = trend_threshold,
         superchill_threshold = superchill_threshold,
-        max_season = max_season
+        max_season = max_season,
+        full_season = full_season
       ) %>%
-      filter_heat_stress_events(
+      filter_out_heat_stress_events(
         heat_threshold = heat_threshold,
         n_hours = n_hours
       )
@@ -52,12 +54,13 @@ apply_dd_filters <- function(dat,
     gaps <- check_for_data_gaps(dat, STATION)
 
     dat %>%
-      st_filter_growing_seasons(
+      st_filter_in_growing_seasons(
         trend_threshold = trend_threshold,
         superchill_threshold = superchill_threshold,
-        max_season = max_season
+        max_season = max_season,
+        full_season = full_season
       ) %>%
-      st_filter_heat_stress_events(
+      st_filter_out_heat_stress_events(
         heat_threshold = heat_threshold,
         n_hours = n_hours
       )

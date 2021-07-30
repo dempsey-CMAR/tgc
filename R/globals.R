@@ -57,16 +57,32 @@ utils::globalVariables(c(
   "START_SEASON",
   "END_SEASON",
   "SEASON",
+  "ID",
+  "MAX_TIMESTAMP",
+  "MIN_TIMESTAMP",
+  "MAX_TIMESTAMP_NA",
+  "MIN_TIMESTAMP_NA",
 
   # count_growing_days
   "TOTAL_DAYS",
   "n_filtered_days",
   "n_growing_days",
 
+  # count_max_event_days
+  "max_event_days",
+
   # check_for_data_gaps
   "GAP_START",
   "GAP_LENGTH_HOURS",
-  "GAP_LENGTH_DAYS"
+  "GAP_LENGTH_DAYS",
+
+  # tgc_functions
+  "FINAL_WEIGHT",
+  "TGC_FINAL_WEIGHT",
+  "INITIAL_WEIGHT",
+  "TGC_INITIAL_WEIGHT",
+  "TGC",
+  "INDEX"
 
 ))
 

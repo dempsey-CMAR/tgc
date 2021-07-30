@@ -7,9 +7,10 @@
 identify_growing_seasons(
   dat,
   ...,
+  full_season = TRUE,
   trend_threshold = 4,
   superchill_threshold = -0.7,
-  max_season = 18
+  max_season = 540
 )
 }
 \arguments{
@@ -21,6 +22,16 @@ will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{DEPTH}.}
+
+\item{full_season}{Logical argument. The default, \code{full_season = TRUE}
+will return \code{NA} for \code{START_SEASON} and \code{END_SEASON} that
+occur outside of the date range of the data series. For example, if the
+data series starts when temperature is already above
+\code{trend_threshold}, \code{START_SEASON = NA}; if the season length is
+determined by \code{max_season}, which results in a date after the last
+observation, \code{END_SEASON = NA}. If \code{full_season = FALSE}, the
+\code{START_SEASON} and \code{END_SEASON} dates default to the first and
+last timestamp in \code{...} and \code{DEPTH}.}
 
 \item{trend_threshold}{The threshold for "trending up". Default is
 \code{trend_threshold = 4}. The last observation above
@@ -34,7 +45,10 @@ group in \code{...}.}
 group in \code{DEPTH} and \code{...}.}
 
 \item{max_season}{The length of the growing season in months for groups that
-have no temperature observations below \code{superchill_threshold}.}
+have no temperature observations below \code{superchill_threshold}. Default
+is \code{max_season = 540} days (~18 months). Note: units are days because
+adding 18 months to August 30 or August 31 results in \code{NA} (because
+February 30 and February 31 are not real dates).}
 }
 \value{
 Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}

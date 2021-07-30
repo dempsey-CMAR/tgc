@@ -24,16 +24,12 @@
 #'
 #' @export
 #'
-#' @examples
-#' data(string_data)
-#' string_data <- string_data[which(string_data$VARIABLE == "Temperature"), ]
-#' count_growing_days(string_data)
-
 count_growing_days <- function(dat,
                                ...,
                                trend_threshold = 4,
                                superchill_threshold = -0.7,
-                               max_season = 18,
+                               max_season = 540,
+                               full_season = TRUE,
                                heat_threshold = 18,
                                n_hours = 24){
 
@@ -55,16 +51,23 @@ count_growing_days <- function(dat,
 
     dat_out <- dat %>%
       # groups by STATION
-      st_filter_growing_seasons(trend_threshold = trend_threshold,
-                                superchill_threshold = superchill_threshold,
-                                max_season = max_season)
+      st_filter_in_growing_seasons(
+        trend_threshold = trend_threshold,
+        superchill_threshold = superchill_threshold,
+        max_season = max_season,
+        full_season = full_season
+      )
+
   } else{
 
     dat_out <- dat %>%
       # ignores STATION column
-      filter_growing_seasons(trend_threshold = trend_threshold,
-                             superchill_threshold = superchill_threshold,
-                             max_season = max_season)
+      filter_in_growing_seasons(
+        trend_threshold = trend_threshold,
+        superchill_threshold = superchill_threshold,
+        max_season = max_season,
+        full_season = full_season
+      )
   }
 
   dat_out %>%

@@ -1,12 +1,12 @@
 Package: tgc
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Thermal Growth Coefficient Model for Aquaculture
+Version: 0.0.1
 Authors@R: 
     person(given = "Danielle",
            family = "Dempsey",
            role = c("aut", "cre"),
            email = "ddempsey@perennia.ca")
-Description: What the package does (one paragraph).
+Description: Text to follow
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

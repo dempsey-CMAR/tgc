@@ -1,7 +1,7 @@
 #' Plot temperature coloured by depth
 #'
 #' @inheritParams identify_heat_stress_intervals
-#' @inheritParams filter_growing_seasons
+#' @inheritParams filter_in_growing_seasons
 #'
 #' @param facet_var Variable(s) defining faceting groups. Variables must be
 #'   column(s) in \code{dat}). For a single facet variable: \code{facet_var =
