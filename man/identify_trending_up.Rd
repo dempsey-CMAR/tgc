@@ -23,15 +23,16 @@ triggers the beginning of the growing season for each \code{DEPTH} and
 group in \code{...}.}
 }
 \value{
-Returns a tibble with the \code{TIMESTAMP} of the final time
-\code{VALUE} exceeds \code{trend_threshold} and does not return below
-\code{trend_threshold} (for each \code{DEPTH} and group in \code{...}).
+Returns a tibble. \code{START_TREND} is the \code{TIMESTAMP} of the
+final time \code{VALUE} exceeds \code{trend_threshold} and does not return
+below \code{trend_threshold} (for each \code{DEPTH} and group in
+\code{...}).
 
 This \code{TIMESTAMP} is passed to \code{identify_growing_seasons()} to
 denote the start of the growing season.
 
-No row will be returned for groups for which \code{VALUE} did not cross
-\code{trend_threshold}.
+\code{START_TREND} is assigned \code{NA} for groups for which \code{VALUE}
+did not cross \code{trend_threshold}.
 }
 \description{
 Identify when VALUE begins trending up
@@ -40,6 +41,9 @@ Identify when VALUE begins trending up
 Identifies \code{TIMESTAMP} when \code{VALUE} exceeds threshold and
 does not return below the threshold, for each group in \code{DEPTH} and
 \code{...}.
+
+If \code{VALUE} never crosses the threshold because temperature is always >
+\code{trend_threshold}, the date will be returned as \code{NA}.
 }
 \examples{
 data("string_data")
