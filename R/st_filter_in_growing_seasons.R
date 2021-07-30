@@ -27,10 +27,11 @@
 #'
 #' @export
 
-st_filter_growing_seasons <- function(dat,
+st_filter_in_growing_seasons <- function(dat,
                                       trend_threshold = 4,
                                       superchill_threshold = -0.7,
-                                      max_season = 18){
+                                      max_season = 540,
+                                      full_season = full_season){
 
   stations <- unique(dat$STATION)
 
@@ -44,7 +45,7 @@ st_filter_growing_seasons <- function(dat,
 
     dat.i <- filter(dat, STATION == station.i)
 
-    st_dat_filtered[[i]] <- filter_growing_seasons(
+    st_dat_filtered[[i]] <- filter_in_growing_seasons(
       dat = dat.i,
       trend_threshold = trend_threshold,
       superchill_threshold = superchill_threshold,
