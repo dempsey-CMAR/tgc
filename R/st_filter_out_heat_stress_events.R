@@ -31,7 +31,7 @@
 #' @export
 
 
-st_filter_heat_stress_events <- function(dat,
+st_filter_out_heat_stress_events <- function(dat,
                                          heat_threshold = 18,
                                          n_hours = 24){
 
@@ -45,11 +45,9 @@ st_filter_heat_stress_events <- function(dat,
 
     station.i <- stations[i]
 
-   # print("st_filter_heat_stress_events(): filtering station", station.i)
-
     dat.i <- filter(dat, STATION == station.i)
 
-    st_dat_filtered[[i]] <- filter_heat_stress_events(
+    st_dat_filtered[[i]] <- filter_out_heat_stress_events(
       dat = dat.i,
       heat_threshold = heat_threshold,
       n_hours = n_hours
