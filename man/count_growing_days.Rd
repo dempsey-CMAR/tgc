@@ -62,13 +62,11 @@ triggers an \code{n-hour} heat stress interval.}
 \value{
 Returns a tibble with columns: \code{...}, \code{DEPTH},
 \code{SEASON}, \code{START_SEASON} (minimum TIMESTAMP for each group),
-\code{END_SEASON} (maximum TIMESTAMP for each group), \code{TOTAL_DAYS}
+\code{END_SEASON} (maximum TIMESTAMP for each group), \code{STOCKED_DAYS}
 (\code{difftime(END_SEASON, START_SEASON, units = "days")}),
 \code{n_filtered_days} (calculated from
-\code{identify_heat_stress_events}), and \code{n_growing_days} (TOTAL_DAYS
-\itemize{
-\item n_filtered_days).
-}
+\code{identify_heat_stress_events}), and \code{n_growing_days}
+(STOCKED_DAYS - n_filtered_days).
 }
 \description{
 Count number of days that were suitable for growth

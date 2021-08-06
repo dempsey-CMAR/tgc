@@ -14,11 +14,11 @@
 #'
 #' @return Returns a tibble with columns: \code{...}, \code{DEPTH},
 #'   \code{SEASON}, \code{START_SEASON} (minimum TIMESTAMP for each group),
-#'   \code{END_SEASON} (maximum TIMESTAMP for each group), \code{TOTAL_DAYS}
+#'   \code{END_SEASON} (maximum TIMESTAMP for each group), \code{STOCKED_DAYS}
 #'   (\code{difftime(END_SEASON, START_SEASON, units = "days")}),
 #'   \code{n_filtered_days} (calculated from
-#'   \code{identify_heat_stress_events}), and \code{n_growing_days} (TOTAL_DAYS
-#'   - n_filtered_days).
+#'   \code{identify_heat_stress_events}), and \code{n_growing_days}
+#'   (STOCKED_DAYS - n_filtered_days).
 #'
 #' @importFrom dplyr mutate group_by summarize left_join if_else
 #'
@@ -77,7 +77,7 @@ count_growing_days <- function(dat,
       END_SEASON = max(TIMESTAMP)
     ) %>%
     mutate(
-      TOTAL_DAYS = as.numeric(
+      STOCKED_DAYS = as.numeric(
         difftime(END_SEASON, START_SEASON, units = "days")
       )
     ) %>%
@@ -85,9 +85,9 @@ count_growing_days <- function(dat,
     mutate(
       n_filtered_days = if_else(is.na(n_filtered_days), 0, n_filtered_days),
 
-      n_growing_days = round(TOTAL_DAYS - n_filtered_days, digits = 2),
+      n_growing_days = round(STOCKED_DAYS - n_filtered_days, digits = 2),
 
-      TOTAL_DAYS = round(TOTAL_DAYS, digits = 2),
+      STOCKED_DAYS = round(STOCKED_DAYS, digits = 2),
       n_filtered_days = round(n_filtered_days, digits = 2)
     ) %>%
     ungroup()

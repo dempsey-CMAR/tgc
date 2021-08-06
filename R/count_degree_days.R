@@ -59,7 +59,7 @@ count_degree_days <- function(dat_filt, ..., growing_days){
     ) %>%
     ungroup() %>%
     select(..., SEASON, DEPTH,
-           START_SEASON, END_SEASON, TOTAL_DAYS,
+           START_SEASON, END_SEASON, STOCKED_DAYS,
            n_filtered_days, n_growing_days, AVG_TEMPERATURE, n_degree_days)
 
 }

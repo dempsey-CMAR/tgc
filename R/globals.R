@@ -64,7 +64,7 @@ utils::globalVariables(c(
   "MIN_TIMESTAMP_NA",
 
   # count_growing_days
-  "TOTAL_DAYS",
+  "STOCKED_DAYS",
   "n_filtered_days",
   "n_growing_days",
 
