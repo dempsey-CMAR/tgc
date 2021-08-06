@@ -6,7 +6,7 @@
 \usage{
 filter_in_growing_seasons(
   dat,
-  full_season,
+  full_season = TRUE,
   trend_threshold = 4,
   superchill_threshold = -0.7,
   max_season = 540

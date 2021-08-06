@@ -41,7 +41,7 @@
 #' @export
 
 filter_in_growing_seasons <- function(dat,
-                                   full_season,
+                                   full_season = TRUE,
                                    trend_threshold = 4,
                                    superchill_threshold = -0.7,
                                    max_season = 540){
@@ -66,7 +66,8 @@ filter_in_growing_seasons <- function(dat,
     trend_threshold = trend_threshold,
     superchill_threshold = superchill_threshold,
     max_season = max_season
-  )
+  ) %>%
+    select(-SEASON_DAYS, -SEASON_MONTHS)
 
   # seasons to loop over
   seasons_unique <- unique(season_filters$SEASON)
