@@ -3,9 +3,9 @@
 #' @details Final weight is calculated from the thermal growth coefficient (TGC)
 #'   model:
 #'
-#'   \deqn{final_weight = (initial_weight^(1/3) + (TGC/100)*degree_days)^3 }
+#'   \deqn{final_weight = (initial_weight^(1/3) + (TGC/1000)*degree_days)^3 }
 #'
-#'   where \eqn{final_weight} and \eqn{initial_weight} are in grams.
+#'   where \eqn{final_weight} and \eqn{initial_weight} are in kilograms.
 #'
 #'   Final weight will be calculated for all combinations of
 #'   \code{initial_weight} and \code{tgc} supplied in the arguments and each row
@@ -38,7 +38,7 @@ TGC_calculate_final_weight <-function(dd_table,
     mutate(INDEX = c(1:n())) %>%
     full_join(params, by = "INDEX") %>%
     mutate(
-      TGC_FINAL_WEIGHT = (INITIAL_WEIGHT^(1/3) + (TGC/100)*n_degree_days)^3,
+      TGC_FINAL_WEIGHT = (INITIAL_WEIGHT^(1/3) + (TGC/1000) * n_degree_days)^3,
       TGC_FINAL_WEIGHT = round(TGC_FINAL_WEIGHT, digits = 2)
     ) %>%
     select(-INDEX)
@@ -50,9 +50,9 @@ TGC_calculate_final_weight <-function(dd_table,
 #' @details Initial weight is calculated from the thermal growth coefficient
 #'   (TGC) model:
 #'
-#'   \deqn{initial_weight = (final_weight^(1/3) - (TGC/100)*degree_days)^3 }
+#'   \deqn{initial_weight = (final_weight^(1/3) - (TGC/1000)*degree_days)^3 }
 #'
-#'   where \eqn{final_weight} and \eqn{initial_weight} are in grams.
+#'   where \eqn{final_weight} and \eqn{initial_weight} are in kilograms.
 #'
 #'   Initial weight will be calculated for all combinations of
 #'   \code{initial_weight} and \code{tgc} supplied in the arguments and each row
@@ -82,7 +82,7 @@ TGC_calculate_initial_weight <- function(dd_table,
     mutate(INDEX = c(1:n())) %>%
     full_join(params, by = "INDEX") %>%
     mutate(
-      TGC_INITIAL_WEIGHT = (final_weight^(1/3) - (TGC/100)*n_degree_days)^3,
+      TGC_INITIAL_WEIGHT = (final_weight^(1/3) - (TGC/1000)*n_degree_days)^3,
       TGC_INITIAL_WEIGHT = round(TGC_INITIAL_WEIGHT, digits = 2)
     ) %>%
     select(-INDEX)
@@ -114,7 +114,7 @@ TGC_calculate_degree_days <- function(initial_weight,
   # calculate degree days for each row and return
   params %>%
     mutate(
-      TGC_DEGREE_DAYS =  (FINAL_WEIGHT^(1/3) - INITIAL_WEIGHT^(1/3) ) * 100/TGC
+      TGC_DEGREE_DAYS =  (FINAL_WEIGHT^(1/3) - INITIAL_WEIGHT^(1/3) ) * 1000/TGC
     )
 
 }

@@ -25,9 +25,9 @@ Calculate final body weight using TGC model
 Final weight is calculated from the thermal growth coefficient (TGC)
 model:
 
-\deqn{final_weight = (initial_weight^(1/3) + (TGC/100)*degree_days)^3 }
+\deqn{final_weight = (initial_weight^(1/3) + (TGC/1000)*degree_days)^3 }
 
-where \eqn{final_weight} and \eqn{initial_weight} are in grams.
+where \eqn{final_weight} and \eqn{initial_weight} are in kilograms.
 
 Final weight will be calculated for all combinations of
 \code{initial_weight} and \code{tgc} supplied in the arguments and each row
