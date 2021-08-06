@@ -51,8 +51,10 @@ adding 18 months to August 30 or August 31 results in \code{NA} (because
 February 30 and February 31 are not real dates).}
 }
 \value{
-Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}
-for each group in \code{DEPTH} and group in \code{...}.
+Returns a tibble with the \code{START_SEASON}, \code{END_SEASON},
+\code{SEASON_DAYS} (length of season in days), and  \code{SEASON_MONTHS}
+(season length in months; assumes 1 month = 30 days) for each group in
+\code{DEPTH} and group in \code{...}.
 }
 \description{
 Identify start and end of growing seasons for each year
@@ -77,7 +79,7 @@ If the time series begins when the temperature is above
 If the time series does not go below \code{superchill_threshold}, the
 growing season is assumed to be \code{max_season} months long.
 \code{END_SEASON} is assigned the timestamp \code{START_SEASON} +
-\code{months(max_season)}.
+\code{days(max_season)}.
 
 Growing seasons may overlap if \code{max_season} is used to determine
 \code{END_SEASON}.

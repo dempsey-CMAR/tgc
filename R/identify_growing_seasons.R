@@ -19,7 +19,7 @@
 #'   If the time series does not go below \code{superchill_threshold}, the
 #'   growing season is assumed to be \code{max_season} months long.
 #'   \code{END_SEASON} is assigned the timestamp \code{START_SEASON} +
-#'   \code{months(max_season)}.
+#'   \code{days(max_season)}.
 #'
 #'   Growing seasons may overlap if \code{max_season} is used to determine
 #'   \code{END_SEASON}.
@@ -44,8 +44,10 @@
 #'   \code{START_SEASON} and \code{END_SEASON} dates default to the first and
 #'   last timestamp in \code{...} and \code{DEPTH}.
 #'
-#' @return Returns a tibble with the \code{START_SEASON} and \code{END_SEASON}
-#'   for each group in \code{DEPTH} and group in \code{...}.
+#' @return Returns a tibble with the \code{START_SEASON}, \code{END_SEASON},
+#'   \code{SEASON_DAYS} (length of season in days), and  \code{SEASON_MONTHS}
+#'   (season length in months; assumes 1 month = 30 days) for each group in
+#'   \code{DEPTH} and group in \code{...}.
 #'
 #' @importFrom lubridate as_date minutes year month days
 #' @importFrom dplyr filter full_join mutate group_by arrange select
@@ -122,12 +124,16 @@ identify_growing_seasons <- function(dat,
       # if temperature never crosses superchill threshold, use set duration for season
       END_SEASON = if_else(
         is.na(FIRST_CHILL), START_SEASON + days(max_season), as_datetime(FIRST_CHILL)
-      ),
-      # if END_SEASON is out of the max data range, assign NA
-      END_SEASON = if_else(
-        END_SEASON > MAX_TIMESTAMP, as_datetime(NA_character_), END_SEASON
       )
     )
+
+  if(isTRUE(full_season)){
+    # if END_SEASON is out of the max data range, assign NA
+    season_table <- season_table %>%
+      mutate(END_SEASON = if_else(
+        END_SEASON > MAX_TIMESTAMP, as_datetime(NA_character_), END_SEASON)
+      )
+  }
 
   if(isFALSE(full_season)){
 
@@ -137,10 +143,13 @@ identify_growing_seasons <- function(dat,
         START_SEASON = if_else(
           is.na(START_TREND), MIN_TIMESTAMP, START_TREND
         ),
-
+        END_SEASON = if_else(
+          is.na(FIRST_CHILL), START_SEASON + days(max_season), as_datetime(FIRST_CHILL)
+        ),
         # if END_SEASON is out of the max data range, assign the max TIMESTAMP
-        END_SEASON = if_else(END_SEASON > MAX_TIMESTAMP, MAX_TIMESTAMP, END_SEASON)
-      )
+        END_SEASON = if_else(
+          END_SEASON > MAX_TIMESTAMP, MAX_TIMESTAMP, END_SEASON)
+        )
   }
 
   # label seasons based on group ID (does not reset to S1 for each STATION; see loop below)
@@ -178,5 +187,11 @@ identify_growing_seasons <- function(dat,
 
   }
 
-  season_table
+  season_table %>%
+    mutate(
+    SEASON_DAYS = difftime(END_SEASON, START_SEASON, units = "days"),
+    SEASON_DAYS = as.numeric(round(SEASON_DAYS, digits = 2)),
+    SEASON_MONTHS = round(SEASON_DAYS / 30, digits = 2)
+  )
+
 }
