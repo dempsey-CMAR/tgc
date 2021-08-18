@@ -8,6 +8,28 @@
 #'   "SEASON"}. For more than one facet variables: \code{facet_var = "SEASON +
 #'   DEPTH"}. Default is \code{facet_var = NULL}.
 #'
+#' @param date_breaks_major Character string specifying intervals for major
+#'   breaks on the x-axis, e.g., \code{date_breaks_major = "2 month"}. Default
+#'   is \code{date_breaks_major = NULL}, which chooses breaks based on the
+#'   length of the data series.
+#'
+#' @param date_breaks_minor Character string specifying intervals for major
+#'   breaks on the x-axis, e.g., \code{date_breaks_minor = "1 month"}. Default
+#'   is \code{date_breaks_minor = NULL}, which chooses breaks based on the
+#'   length of the data series.
+#'
+#' @param date_labels_format Character string specifying the format of the date
+#'   labels on the x-axis, e.g., \code{date_labels_format = "\%y-\%b"}. Default
+#'   is \code{date_labels_format = NULL}, which chooses labels based on the
+#'   length of the data series.
+#'
+#' @param colour_palette Optional vector of hex colors onto which \code{DEPTH}
+#'   will be mapped. If \code{colour_palette = NULL} (the default), the reverse
+#'   viridis colour palette will be used (option D).
+#'
+#' @param legend_drop Logical argument indicating whether to drop unused depths
+#'   from the legend. Default is \code{legend_drop = TRUE}
+#'
 #' @param ncol Number of columns for faceted figure. Default is \code{ncol = 1}.
 #'
 #' @param nrow Number of rows for faceted figure. Default is \code{nrow = NULL}.
@@ -31,6 +53,14 @@ plot_temperature_at_depth <- function(dat,
                                       superchill_threshold = -0.7,
                                       heat_threshold = 18,
                                       facet_var = NULL,
+
+                                      colour_palette = NULL,
+                                      legend_drop = TRUE,
+
+                                      date_breaks_major = NULL,
+                                      date_breaks_minor = NULL,
+                                      date_labels_format = NULL,
+
                                       ncol = 1,
                                       nrow = NULL,
                                       alpha = 1){
@@ -55,10 +85,12 @@ plot_temperature_at_depth <- function(dat,
     }
   }
 
-  dat <- dat %>%
-    strings::convert_depth_to_ordered_factor()
+  if(!(is.ordered(dat$DEPTH))){
+    dat <- dat %>%
+      strings::convert_depth_to_ordered_factor()
+  }
 
-  color.pal <- strings::get_colour_palette(dat)
+  if(is.null(colour_palette)) colour_palette <- strings::get_colour_palette(dat)
 
   p <- ggplot(dat, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
     annotate("rect",
@@ -72,8 +104,8 @@ plot_temperature_at_depth <- function(dat,
     geom_point(size = 0.25) +
     scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)"))) +
     scale_colour_manual(name = "Depth (m)",
-                        values = color.pal,
-                        drop = FALSE) +
+                        values = colour_palette,
+                        drop = legend_drop) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
     theme_light() +
@@ -83,6 +115,10 @@ plot_temperature_at_depth <- function(dat,
   if(is.null(facet_var)){
 
     axis.breaks <- strings::get_xaxis_breaks(dat)
+
+    if(!is.null(date_breaks_major)) axis.breaks$date.breaks.major <- date_breaks_major
+    if(!is.null(date_breaks_minor)) axis.breaks$date.breaks.minor <- date_breaks_minor
+    if(!is.null(date_labels_format)) axis.breaks$date.labels.format <- date_labels_format
 
     p <- p +
       scale_x_datetime(

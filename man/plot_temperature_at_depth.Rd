@@ -10,6 +10,11 @@ plot_temperature_at_depth(
   superchill_threshold = -0.7,
   heat_threshold = 18,
   facet_var = NULL,
+  colour_palette = NULL,
+  legend_drop = TRUE,
+  date_breaks_major = NULL,
+  date_breaks_minor = NULL,
+  date_labels_format = NULL,
   ncol = 1,
   nrow = NULL,
   alpha = 1
@@ -41,6 +46,28 @@ triggers an \code{n-hour} heat stress interval.}
 column(s) in \code{dat}). For a single facet variable: \code{facet_var =
   "SEASON"}. For more than one facet variables: \code{facet_var = "SEASON +
   DEPTH"}. Default is \code{facet_var = NULL}.}
+
+\item{colour_palette}{Optional vector of hex colors onto which \code{DEPTH}
+will be mapped. If \code{colour_palette = NULL} (the default), the reverse
+viridis colour palette will be used (option D).}
+
+\item{legend_drop}{Logical argument indicating whether to drop unused depths
+from the legend. Default is \code{legend_drop = TRUE}}
+
+\item{date_breaks_major}{Character string specifying intervals for major
+breaks on the x-axis, e.g., \code{date_breaks_major = "2 month"}. Default
+is \code{date_breaks_major = NULL}, which chooses breaks based on the
+length of the data series.}
+
+\item{date_breaks_minor}{Character string specifying intervals for major
+breaks on the x-axis, e.g., \code{date_breaks_minor = "1 month"}. Default
+is \code{date_breaks_minor = NULL}, which chooses breaks based on the
+length of the data series.}
+
+\item{date_labels_format}{Character string specifying the format of the date
+labels on the x-axis, e.g., \code{date_labels_format = "\%y-\%b"}. Default
+is \code{date_labels_format = NULL}, which chooses labels based on the
+length of the data series.}
 
 \item{ncol}{Number of columns for faceted figure. Default is \code{ncol = 1}.}
 
