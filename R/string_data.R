@@ -1,11 +1,10 @@
-#' Example temperature and dissolved oxygen data in tidy format
+#' Example temperature data
 #'
-#' @format This example data is a dataframe with 107898 rows and 6 variables:
-#'   \describe{ \item{DEPLOYMENT_PERIOD}{Deployment and retrieval dates}
-#'   \item{SENSOR}{Sensor type and serial number} \item{TIMESTAMP}{Timestamp of
-#'   the observation} \item{VARIABLE}{VARIABLE MEASURED} \item{DEPTH}{Depth of
-#'   the sensor} \item{VALUE}{Value of measurement} }
+#' @format This example data is a dataframe with 89370 rows and 4 variables:
+#'   \describe{ \item{STATION}{Station where measurement was recorded}
+#'   \item{TIMESTAMP}{Timestamp of the observation} \item{DEPTH}{Depth of the
+#'   sensor} \item{VALUE}{Value of temperature measurement} }
 #'
-#' @source Data from Coastal Monitoring Program; example data from strings
-#'   package
+#' @source Data from CMAR's Coastal Monitoring Program
+
 "string_data"
