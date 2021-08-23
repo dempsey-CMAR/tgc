@@ -11,7 +11,7 @@ plot_temperature_at_depth(
   heat_threshold = 18,
   facet_var = NULL,
   colour_palette = NULL,
-  legend_drop = TRUE,
+  legend_drop = FALSE,
   date_breaks_major = NULL,
   date_breaks_minor = NULL,
   date_labels_format = NULL,
@@ -52,7 +52,7 @@ will be mapped. If \code{colour_palette = NULL} (the default), the reverse
 viridis colour palette will be used (option D).}
 
 \item{legend_drop}{Logical argument indicating whether to drop unused depths
-from the legend. Default is \code{legend_drop = TRUE}}
+from the legend. Default is \code{legend_drop = FALSE}}
 
 \item{date_breaks_major}{Character string specifying intervals for major
 breaks on the x-axis, e.g., \code{date_breaks_major = "2 month"}. Default

@@ -28,7 +28,7 @@
 #'   viridis colour palette will be used (option D).
 #'
 #' @param legend_drop Logical argument indicating whether to drop unused depths
-#'   from the legend. Default is \code{legend_drop = TRUE}
+#'   from the legend. Default is \code{legend_drop = FALSE}
 #'
 #' @param ncol Number of columns for faceted figure. Default is \code{ncol = 1}.
 #'
@@ -55,7 +55,7 @@ plot_temperature_at_depth <- function(dat,
                                       facet_var = NULL,
 
                                       colour_palette = NULL,
-                                      legend_drop = TRUE,
+                                      legend_drop = FALSE,
 
                                       date_breaks_major = NULL,
                                       date_breaks_minor = NULL,
