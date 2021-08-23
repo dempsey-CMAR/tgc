@@ -1,7 +1,7 @@
 #' Count number of days that were suitable for growth
 #'
 #' @details Days suitable for growth are days that remain after applying season
-#'   and heat stress filters (\code{apply_dd_filters}).
+#'   and heat stress filters (\code{apply_dd_filters()}).
 #'
 #'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
 #'
