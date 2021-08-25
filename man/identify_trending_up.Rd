@@ -44,6 +44,8 @@ does not return below the threshold, for each group in \code{DEPTH} and
 
 If \code{VALUE} never crosses the threshold because temperature is always >
 \code{trend_threshold}, the date will be returned as \code{NA}.
+
+\code{VALUE = trend_threshold} is considered over the threshold.
 }
 \examples{
 data("string_data")

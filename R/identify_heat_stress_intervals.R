@@ -18,7 +18,7 @@
 #'
 #'   Note: intervals may overlap with previous interval(s).
 #'
-#' @importFrom dplyr mutate filter select
+#' @importFrom dplyr mutate filter select arrange
 #' @importFrom lubridate as_datetime hours
 #'
 #' @family heat stress
@@ -60,6 +60,7 @@ identify_heat_stress_intervals <- function(dat,
       interval_start = TIMESTAMP,
       interval_end = TIMESTAMP + hours(n_hours)
     ) %>%
-    select(..., DEPTH, interval_start, interval_end, -EXCEED_THRESH)
+    select(..., DEPTH, interval_start, interval_end, -EXCEED_THRESH) %>%
+    arrange(..., DEPTH, interval_start)
 
 }

@@ -7,6 +7,8 @@
 #'   If \code{VALUE} never crosses the threshold because temperature is always >
 #'   \code{trend_threshold}, the date will be returned as \code{NA}.
 #'
+#'   \code{VALUE = trend_threshold} is considered over the threshold.
+#'
 #' @param dat Dataframe with at least three columns: \code{TIMESTAMP} (must be
 #'   possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 #'   \code{VARIABLE} is included, it must have one unique entry. May also
@@ -33,7 +35,7 @@
 #'   \code{START_TREND} is assigned \code{NA} for groups for which \code{VALUE}
 #'   did not cross \code{trend_threshold}.
 #'
-#' @importFrom dplyr arrange mutate filter summarise ungroup
+#' @importFrom dplyr arrange mutate filter summarise group_by ungroup left_join
 #' @importFrom lubridate year as_datetime
 #' @export
 #'
@@ -62,8 +64,8 @@ identify_trending_up <- function(dat, ..., trend_threshold = 4){
 
   trend_table <- dat %>%
     mutate(
-      TIMESTAMP = as_datetime(TIMESTAMP),
-      YEAR = year(TIMESTAMP)
+      TIMESTAMP = as_datetime(TIMESTAMP)#
+     #YEAR = year(TIMESTAMP)
     ) %>%
     group_by(..., DEPTH) %>%
     arrange(TIMESTAMP, .by_group = TRUE) %>%

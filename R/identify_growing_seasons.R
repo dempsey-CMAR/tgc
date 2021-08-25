@@ -50,7 +50,7 @@
 #'   \code{DEPTH} and group in \code{...}.
 #'
 #' @importFrom lubridate as_date minutes year month days
-#' @importFrom dplyr filter full_join mutate group_by arrange select
+#' @importFrom dplyr filter full_join mutate group_by ungroup arrange select
 #' @importFrom purrr map_df
 #'
 #' @export
