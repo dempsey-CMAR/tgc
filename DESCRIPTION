@@ -1,12 +1,12 @@
 Package: tgc
 Title: Thermal Growth Coefficient Model for Aquaculture
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person(given = "Danielle",
            family = "Dempsey",
            role = c("aut", "cre"),
            email = "ddempsey@perennia.ca")
-Description: Text to follow
+Description: Text to follow.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
