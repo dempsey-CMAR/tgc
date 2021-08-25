@@ -23,7 +23,7 @@ utils::globalVariables(c(
   "EXCEED_THRESH",
   "n_obs",
 
-  #identify_trending_up
+  # identify_trending_up
   "CROSS_THRESH",
   "START_TREND",
 
@@ -41,10 +41,11 @@ utils::globalVariables(c(
   "interval_end",
 
   # identify_heat_stress_events
-  "overlap",
-  "event_id1",
-  "event_id2",
-  "event_id3",
+  "overlap_lag",
+  "overlap_lead",
+  "int_id",
+  "event_id",
+
   "stress_start",
   "stress_end",
 
@@ -62,6 +63,10 @@ utils::globalVariables(c(
   "MIN_TIMESTAMP",
   "MAX_TIMESTAMP_NA",
   "MIN_TIMESTAMP_NA",
+
+  # filter_in_growing_seasons
+  "SEASON_DAYS",
+  "SEASON_MONTHS",
 
   # count_growing_days
   "STOCKED_DAYS",
