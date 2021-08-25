@@ -23,7 +23,7 @@
 #'   No row will be returned for groups for which \code{VALUE} did not cross
 #'   \code{superchill_threshold}.
 #'
-#' @importFrom dplyr arrange mutate filter summarise ungroup
+#' @importFrom dplyr arrange mutate filter summarise group_by ungroup left_join
 #' @importFrom lubridate year
 #' @export
 
@@ -40,8 +40,12 @@ identify_first_superchill <- function(dat, ..., superchill_threshold = -0.7){
     }
   }
 
-  first_chill <- dat %>%
-    mutate(YEAR = year(TIMESTAMP)) %>%
+  chill_groups <- dat %>%
+    distinct(..., DEPTH)
+
+  chill_table <- dat %>%
+    mutate(TIMESTAMP = as_datetime(TIMESTAMP)) %>%
+   #mutate(YEAR = year(TIMESTAMP)) %>%
     group_by(..., DEPTH) %>%
     arrange(TIMESTAMP, .by_group = TRUE) %>%
     mutate(CROSS_THRESH = if_else(
@@ -49,11 +53,20 @@ identify_first_superchill <- function(dat, ..., superchill_threshold = -0.7){
       FALSE )
     ) %>%
     filter(CROSS_THRESH) %>%
-    mutate(FIRST_CHILL = NA)
+    ungroup()
+  # mutate(FIRST_CHILL = NA)
 
-  if(nrow(first_chill) > 0){
+  if(nrow(chill_table) == 0){
 
-    first_chill <- first_chill %>%
+    chill_table <- chill_groups %>%
+      mutate(FIRST_CHILL = as_datetime(NA_character_))
+
+  } else {
+
+    # if(nrow(first_chill) > 0){
+    chill_table <- chill_groups %>%
+      left_join(chill_table) %>%
+      group_by(..., DEPTH) %>%
       summarise(FIRST_CHILL = min(TIMESTAMP)) %>%
       # because the VALUE at min(TIMESTAMP) is < superchill_threshold
       # (don't want to include that value in filtered data)
@@ -61,6 +74,6 @@ identify_first_superchill <- function(dat, ..., superchill_threshold = -0.7){
       ungroup()
   }
 
-  first_chill
+  chill_table
 
 }
