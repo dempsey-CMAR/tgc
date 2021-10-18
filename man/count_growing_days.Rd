@@ -7,12 +7,13 @@
 count_growing_days(
   dat,
   ...,
+  heat_threshold = 18,
+  n_hours = 24,
+  apply_season_filt = FALSE,
   trend_threshold = 4,
   superchill_threshold = -0.7,
   max_season = 540,
-  full_season = TRUE,
-  heat_threshold = 18,
-  n_hours = 24
+  full_season = TRUE
 )
 }
 \arguments{
@@ -24,6 +25,19 @@ will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{SEASON} and \code{DEPTH}.}
+
+\item{heat_threshold}{The threshold for heat stress. Default is
+\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+triggers an \code{n-hour} heat stress interval.}
+
+\item{n_hours}{Length of heat stress interval in hours (default is
+\code{n_hours = 24}).}
+
+\item{apply_season_filt}{Logical argument. If \code{TRUE}, observations in
+\code{dat} will be assigned to seasons using the
+\code{*filter_in_growing_seasons()}. If \code{dat} already has a
+\code{SEASON} column, use the default \code{apply_season_filt = FALSE} (the
+arguments related to assigning \code{SEASNO} will be ignored).}
 
 \item{trend_threshold}{The threshold for "trending up". Default is
 \code{trend_threshold = 4}. The last observation above
@@ -51,13 +65,6 @@ will only return data for groups with a full season of data (e.g.,
 If \code{full_season = FALSE}, data for all groups will be returned;
 the \code{START_SEASON} and \code{END_SEASON} dates default to the first
 and last timestamp in \code{...} and \code{DEPTH}.}
-
-\item{heat_threshold}{The threshold for heat stress. Default is
-\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
-triggers an \code{n-hour} heat stress interval.}
-
-\item{n_hours}{Length of heat stress interval in hours (default is
-\code{n_hours = 24}).}
 }
 \value{
 Returns a tibble with columns: \code{...}, \code{DEPTH},

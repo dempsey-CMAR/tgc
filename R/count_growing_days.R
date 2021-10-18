@@ -12,6 +12,11 @@
 #' @param ... Additional columns in \code{dat} to use as grouping variables.
 #'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
 #'
+#' @param apply_season_filt Logical argument. If \code{TRUE}, observations in
+#'   \code{dat} will be assigned to seasons using the
+#'   \code{*filter_in_growing_seasons()}. If \code{dat} already has a
+#'   \code{SEASON} column, use the default \code{apply_season_filt = FALSE}.
+#'
 #' @return Returns a tibble with columns: \code{...}, \code{DEPTH},
 #'   \code{SEASON}, \code{START_SEASON} (minimum TIMESTAMP for each group),
 #'   \code{END_SEASON} (maximum TIMESTAMP for each group), \code{STOCKED_DAYS}
@@ -26,12 +31,16 @@
 #'
 count_growing_days <- function(dat,
                                ...,
+
+                               heat_threshold = 18,
+                               n_hours = 24,
+
+                               apply_season_filt = FALSE,
                                trend_threshold = 4,
                                superchill_threshold = -0.7,
                                max_season = 540,
-                               full_season = TRUE,
-                               heat_threshold = 18,
-                               n_hours = 24){
+                               full_season = TRUE
+                               ){
 
   # number of days filtered out due to heat stress events
   filtered_days <- identify_heat_stress_events(dat = dat,
@@ -47,27 +56,33 @@ count_growing_days <- function(dat,
     summarize(n_filtered_days = sum(n_filtered_days)) %>%
     ungroup()
 
-  if("STATION" %in% colnames(dat)){
+  if(apply_season_filt){
 
-    dat_out <- dat %>%
-      # groups by STATION
-      st_filter_in_growing_seasons(
-        trend_threshold = trend_threshold,
-        superchill_threshold = superchill_threshold,
-        max_season = max_season,
-        full_season = full_season
-      )
+    if("STATION" %in% colnames(dat)){
 
+      dat_out <- dat %>%
+        # groups by STATION
+        st_filter_in_growing_seasons(
+          trend_threshold = trend_threshold,
+          superchill_threshold = superchill_threshold,
+          max_season = max_season,
+          full_season = full_season
+        )
+
+    } else{
+
+      dat_out <- dat %>%
+        # ignores STATION column
+        filter_in_growing_seasons(
+          trend_threshold = trend_threshold,
+          superchill_threshold = superchill_threshold,
+          max_season = max_season,
+          full_season = full_season
+        )
+    }
   } else{
 
-    dat_out <- dat %>%
-      # ignores STATION column
-      filter_in_growing_seasons(
-        trend_threshold = trend_threshold,
-        superchill_threshold = superchill_threshold,
-        max_season = max_season,
-        full_season = full_season
-      )
+    dat_out <- dat
   }
 
   dat_out %>%
