@@ -19,7 +19,20 @@ plot_filtered_data <- function(dat, dat_filtered,
                                trend_threshold = 4,
                                superchill_threshold = -0.7,
                                heat_threshold = 18,
+
+                               colour_palette = NULL,
+
+                               date_breaks_major = NULL,
+                               date_breaks_minor = NULL,
+                               date_labels_format = NULL,
+
                                alpha = 1){
+
+
+# identify filtered observations -------------------------------------------------------------
+
+  dat <- dat %>% mutate(DEPTH = as.character(DEPTH))
+  dat_filtered <- dat_filtered %>% mutate(DEPTH = as.character(DEPTH))
 
   dat_plot <- dat_filtered %>%
     # remove observations included in more than one SEASON
@@ -34,10 +47,21 @@ plot_filtered_data <- function(dat, dat_filtered,
     strings::convert_depth_to_ordered_factor()
   levels(dat_plot$DEPTH)[1] <- "Filtered"
 
-  color_pal <- strings::get_colour_palette(dat_plot)
-  color_pal <- c("grey", color_pal)
+
+# pick colour palette and xaxis breaks ------------------------------------
+
+  if(is.null(colour_palette)) colour_pal <- strings::get_colour_palette(dat_plot)
+
+  colour_pal <- c("grey", colour_pal)
+
 
   axis_breaks <- strings::get_xaxis_breaks(dat_plot)
+
+  if(!is.null(date_breaks_major)) axis_breaks$date.breaks.major <- date_breaks_major
+  if(!is.null(date_breaks_minor)) axis_breaks$date.breaks.minor <- date_breaks_minor
+  if(!is.null(date_labels_format)) axis_breaks$date.labels.format <- date_labels_format
+
+# plot --------------------------------------------------------------------
 
   ggplot(dat_plot, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
 
@@ -52,12 +76,13 @@ plot_filtered_data <- function(dat, dat_filtered,
 
     geom_point(size = 0.25) +
 
-    scale_x_datetime(breaks = axis_breaks$date.breaks.major,
+    scale_x_datetime(name = "Date",
+                     breaks = axis_breaks$date.breaks.major,
                      minor_breaks = axis_breaks$date.breaks.minor,
                      date_labels =  axis_breaks$date.labels.format) +
     scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)"))) +
-    scale_colour_manual(name = "Depth",
-                        values = color_pal,
+    scale_colour_manual(name = "Depth (m)",
+                        values = colour_pal,
                         drop = FALSE) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
     # geom_hline(yintercept = superchill_threshold, col = "deepskyblue", lty = 2) +
