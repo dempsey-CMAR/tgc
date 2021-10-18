@@ -36,8 +36,7 @@ triggers an \code{n-hour} heat stress interval.}
 \item{apply_season_filt}{Logical argument. If \code{TRUE}, observations in
 \code{dat} will be assigned to seasons using the
 \code{*filter_in_growing_seasons()}. If \code{dat} already has a
-\code{SEASON} column, use the default \code{apply_season_filt = FALSE} (the
-arguments related to assigning \code{SEASNO} will be ignored).}
+\code{SEASON} column, use the default \code{apply_season_filt = FALSE}.}
 
 \item{trend_threshold}{The threshold for "trending up". Default is
 \code{trend_threshold = 4}. The last observation above

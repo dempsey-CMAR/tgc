@@ -36,26 +36,14 @@ count_growing_days <- function(dat,
                                n_hours = 24,
 
                                apply_season_filt = FALSE,
+
                                trend_threshold = 4,
                                superchill_threshold = -0.7,
                                max_season = 540,
                                full_season = TRUE
                                ){
 
-  # number of days filtered out due to heat stress events
-  filtered_days <- identify_heat_stress_events(dat = dat,
-                                               ...,
-                                               heat_threshold = heat_threshold,
-                                               n_hours = n_hours) %>%
-    mutate(
-      n_filtered_days = as.numeric(
-        difftime(stress_end, stress_start, units = "day")
-      )
-    ) %>%
-    group_by(..., DEPTH) %>%
-    summarize(n_filtered_days = sum(n_filtered_days)) %>%
-    ungroup()
-
+# filter for seasons -------------------------------------------------------
   if(apply_season_filt){
 
     if("STATION" %in% colnames(dat)){
@@ -85,6 +73,23 @@ count_growing_days <- function(dat,
     dat_out <- dat
   }
 
+
+  # number of days filtered out due to heat stress events
+  filtered_days <- identify_heat_stress_events(dat_out,
+                                               SEASON,
+                                               ...,
+                                               heat_threshold = heat_threshold,
+                                               n_hours = n_hours) %>%
+    mutate(
+      n_filtered_days = as.numeric(
+        difftime(stress_end, stress_start, units = "day")
+      )
+    ) %>%
+    group_by(SEASON, ..., DEPTH) %>%
+    summarize(n_filtered_days = sum(n_filtered_days)) %>%
+    ungroup()
+
+# subtract number of heat stress days from total number of days in season
   dat_out %>%
     group_by(..., SEASON, DEPTH) %>%
     summarise(
