@@ -10,6 +10,10 @@ plot_filtered_data(
   trend_threshold = 4,
   superchill_threshold = -0.7,
   heat_threshold = 18,
+  colour_palette = NULL,
+  date_breaks_major = NULL,
+  date_breaks_minor = NULL,
+  date_labels_format = NULL,
   alpha = 1
 )
 }
@@ -37,6 +41,25 @@ group in \code{DEPTH} and \code{...}.}
 \item{heat_threshold}{The threshold for heat stress. Default is
 \code{heat_threshold = 18}). Every observation above \code{heat_threshold}
 triggers an \code{n-hour} heat stress interval.}
+
+\item{colour_palette}{Optional vector of hex colors onto which \code{DEPTH}
+will be mapped. If \code{colour_palette = NULL} (the default), the reverse
+viridis colour palette will be used (option D).}
+
+\item{date_breaks_major}{Character string specifying intervals for major
+breaks on the x-axis, e.g., \code{date_breaks_major = "2 month"}. Default
+is \code{date_breaks_major = NULL}, which chooses breaks based on the
+length of the data series.}
+
+\item{date_breaks_minor}{Character string specifying intervals for major
+breaks on the x-axis, e.g., \code{date_breaks_minor = "1 month"}. Default
+is \code{date_breaks_minor = NULL}, which chooses breaks based on the
+length of the data series.}
+
+\item{date_labels_format}{Character string specifying the format of the date
+labels on the x-axis, e.g., \code{date_labels_format = "\%y-\%b"}. Default
+is \code{date_labels_format = NULL}, which chooses labels based on the
+length of the data series.}
 
 \item{alpha}{Transparency for the heat stress and superchill shaded boxes.}
 }
