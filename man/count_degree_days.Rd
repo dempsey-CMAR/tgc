@@ -4,19 +4,66 @@
 \alias{count_degree_days}
 \title{Count number of degree-days}
 \usage{
-count_degree_days(dat_filt, ..., growing_days)
+count_degree_days(
+  dat,
+  ...,
+  heat_threshold = 18,
+  n_hours = 24,
+  apply_season_filt = FALSE,
+  trend_threshold = 4,
+  superchill_threshold = -0.7,
+  max_season = 540,
+  full_season = TRUE
+)
 }
 \arguments{
-\item{dat_filt}{Dataframe that has been filtered by
-\code{apply_dd_filters()}. Includes columns: \code{...}, \code{SEASON},
-\code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
-must have one unique entry. May also include columns with grouping
-variables passed to \code{...}. Other columns will be ignored.}
+\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
+\code{VARIABLE} is included, it must have one unique entry. May also
+include columns with grouping variables passed to \code{...}. Other columns
+will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{SEASON} and \code{DEPTH}.}
 
-\item{growing_days}{Data.frame for each group}
+\item{heat_threshold}{The threshold for heat stress. Default is
+\code{heat_threshold = 18}). Every observation above \code{heat_threshold}
+triggers an \code{n-hour} heat stress interval.}
+
+\item{n_hours}{Length of heat stress interval in hours (default is
+\code{n_hours = 24}).}
+
+\item{apply_season_filt}{Logical argument. If \code{TRUE}, observations in
+\code{dat} will be assigned to seasons using the
+\code{*filter_in_growing_seasons()}. If \code{dat} already has a
+\code{SEASON} column, use the default \code{apply_season_filt = FALSE}.}
+
+\item{trend_threshold}{The threshold for "trending up". Default is
+\code{trend_threshold = 4}. The last observation above
+\code{trend_threshold} that does not return below \code{trend_threshold}
+triggers the beginning of the growing season for each \code{DEPTH} and
+group in \code{...}.}
+
+\item{superchill_threshold}{The threshold for "superchill". Default is
+\code{superchill_threshold = -0.7}. The first observation below
+\code{superchill_threshold} triggers the end of the growing season for each
+group in \code{DEPTH} and \code{...}.}
+
+\item{max_season}{The length of the growing season in months for groups that
+have no temperature observations below \code{superchill_threshold}. Default
+is \code{max_season = 540} days (~18 months). Note: units are days because
+adding 18 months to August 30 or August 31 results in \code{NA} (because
+February 30 and February 31 are not real dates).}
+
+\item{full_season}{Logical argument. The default, \code{full_season = TRUE}
+will only return data for groups with a full season of data (e.g.,
+\code{START_SEASON} and \code{END_SEASON} as returned by
+\code{identify_growing_seasons(dat, full_season = TRUE)} are both NOT
+\code{NA}).
+
+If \code{full_season = FALSE}, data for all groups will be returned;
+the \code{START_SEASON} and \code{END_SEASON} dates default to the first
+and last timestamp in \code{...} and \code{DEPTH}.}
 }
 \value{
 Returns a tibble with columns:

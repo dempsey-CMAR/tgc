@@ -7,45 +7,73 @@
 #'
 #'   Results are grouped by \code{SEASON}, \code{DEPTH}, and \code{...}.
 #'
-#'
-#'  ***Could put count_growing_days and apply_dd_filters in here**
-#'
-#' @param ... Additional columns in \code{dat} to use as grouping variables.
-#'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
-#'
-#' @param dat_filt Dataframe that has been filtered by
-#'   \code{apply_dd_filters()}. Includes columns: \code{...}, \code{SEASON},
-#'   \code{DEPTH}, and \code{VALUE}. If column \code{VARIABLE} is included, it
-#'   must have one unique entry. May also include columns with grouping
-#'   variables passed to \code{...}. Other columns will be ignored.
-#'
-#' @param growing_days Data.frame for each group
+#' @inheritParams count_growing_days
 #'
 #' @return Returns a tibble with columns:
 
 #' @family calculate
+
 #' @author Danielle Dempsey
-#' @import dplyr
+
+#' @import dplyr summarise group_by left_join ungroup select
+
 #' @importFrom lubridate date parse_date_time
+
 #' @export
 
+count_degree_days <- function(dat,
+                              ...,
+                              heat_threshold = 18,
+                              n_hours = 24,
 
-count_degree_days <- function(dat_filt, ..., growing_days){
+                              apply_season_filt = FALSE,
 
-  if("VARIABLE" %in% colnames(dat_filt)){
+                              trend_threshold = 4,
+                              superchill_threshold = -0.7,
+                              max_season = 540,
+                              full_season = TRUE){
 
-    dat_filt <- filter(dat_filt, VARIABLE == "Temperature")
+
+# Define seasons (if not already defined in dat)  ------------------------------------------------------
+
+  if(apply_season_filt) {
+
+    # automatically groups by STATION and DEPTH if required
+    dat <- filter_in_growing_seasons(
+      dat,
+      trend_threshold = trend_threshold,
+      superchill_threshold = superchill_threshold,
+      max_season = max_season,
+      full_season = full_season)
+
   }
 
-  if(!("n_growing_days" %in% colnames(growing_days))) {
+  if(!("SEASON" %in% colnames(dat))) {
 
-    stop("argument growing days MUST include column n_growing_days.
-
-        HINT: check spelling")
+    stop("SEASON column not found.
+         \nHINT: Add SEASON column to dat and set argument apply_season_filt to FALSE")
   }
 
-  # count degree-day for each group
-  dat_filt %>%
+
+# Count growing days in each group (SEASON, DEPTH, ...) -------------------
+
+  growing_days <- count_growing_days(
+    dat,
+    ...,                              # automatically grouped by SEASON and DEPTH
+    apply_season_filt = FALSE,        # season defined above
+    heat_threshold = heat_threshold,
+    n_hours = n_hours
+  )
+
+
+# Count degree-days for each group  -------------------------------------------------------
+
+  dat %>%
+    filter_out_heat_stress_events(
+      ...,
+      heat_threshold = heat_threshold,
+      n_hours = n_hours
+    ) %>%
     group_by(..., SEASON, DEPTH) %>%
     summarise(
       # number of observations in each group
