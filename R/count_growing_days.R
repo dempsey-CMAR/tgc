@@ -28,7 +28,7 @@
 #' @importFrom dplyr mutate group_by summarize left_join if_else
 #'
 #' @export
-#'
+
 count_growing_days <- function(dat,
                                ...,
 
@@ -43,43 +43,31 @@ count_growing_days <- function(dat,
                                full_season = TRUE
                                ){
 
-# filter for seasons -------------------------------------------------------
+# Define seasons if required  -------------------------------------------------------
   if(apply_season_filt){
 
-    if("STATION" %in% colnames(dat)){
+    dat_out <- filter_in_growing_seasons(
+      dat,
+      trend_threshold = trend_threshold,
+      superchill_threshold = superchill_threshold,
+      max_season = max_season,
+      full_season = full_season
+    )
 
-      dat_out <- dat %>%
-        # groups by STATION
-        st_filter_in_growing_seasons(
-          trend_threshold = trend_threshold,
-          superchill_threshold = superchill_threshold,
-          max_season = max_season,
-          full_season = full_season
-        )
-
-    } else{
-
-      dat_out <- dat %>%
-        # ignores STATION column
-        filter_in_growing_seasons(
-          trend_threshold = trend_threshold,
-          superchill_threshold = superchill_threshold,
-          max_season = max_season,
-          full_season = full_season
-        )
-    }
-  } else{
+  } else {
 
     dat_out <- dat
   }
 
-
-  # number of days filtered out due to heat stress events
-  filtered_days <- identify_heat_stress_events(dat_out,
-                                               SEASON,
-                                               ...,
-                                               heat_threshold = heat_threshold,
-                                               n_hours = n_hours) %>%
+  # number of days filtered out due to heat stress events for each SEASON, DEPTH, and ...
+  # identify_heat_stress_events() automatically groups by DEPTH
+  filtered_days <- identify_heat_stress_events(
+    dat_out,
+    ...,
+    SEASON,
+    heat_threshold = heat_threshold,
+    n_hours = n_hours
+  ) %>%
     mutate(
       n_filtered_days = as.numeric(
         difftime(stress_end, stress_start, units = "day")
@@ -89,7 +77,7 @@ count_growing_days <- function(dat,
     summarize(n_filtered_days = sum(n_filtered_days)) %>%
     ungroup()
 
-# subtract number of heat stress days from total number of days in season
+  # subtract number of heat stress days from total number of days in season
   dat_out %>%
     group_by(..., SEASON, DEPTH) %>%
     summarise(

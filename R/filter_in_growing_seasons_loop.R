@@ -24,14 +24,12 @@
 #'   growing seasons identified in \code{identify_growing_seasons}, with an
 #'   additional column \code{SEASON} to label the seasons ("S1", "S2", ...).
 #'   Some observations may be duplicated in consecutive seasons.
-#'
-#' @export
 
-st_filter_in_growing_seasons <- function(dat,
+filter_in_growing_seasons_loop <- function(dat,
                                       trend_threshold = 4,
                                       superchill_threshold = -0.7,
                                       max_season = 540,
-                                      full_season = full_season){
+                                      full_season = TRUE){
 
   stations <- unique(dat$STATION)
 
@@ -45,15 +43,15 @@ st_filter_in_growing_seasons <- function(dat,
 
     dat.i <- filter(dat, STATION == station.i)
 
-    st_dat_filtered[[i]] <- filter_in_growing_seasons(
+    st_dat_filtered[[i]] <- filter_in_growing_seasons_single(
       dat = dat.i,
       trend_threshold = trend_threshold,
       superchill_threshold = superchill_threshold,
-      max_season = max_season
+      max_season = max_season,
+      full_season = full_season
     )
   }
 
   st_dat_filtered %>% map_df(rbind)
-
 
 }

@@ -45,7 +45,6 @@ stress_intervals <- identify_heat_stress_intervals(dat)
 }
 \seealso{
 Other heat stress: 
-\code{\link{filter_out_heat_stress_events}()},
-\code{\link{st_filter_out_heat_stress_events}()}
+\code{\link{filter_out_heat_stress_events}()}
 }
 \concept{heat stress}

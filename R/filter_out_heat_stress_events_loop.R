@@ -26,12 +26,8 @@
 #' @importFrom dplyr filter
 #' @importFrom purrr map_df
 #'
-#' @family heat stress
-#'
-#' @export
 
-
-st_filter_out_heat_stress_events <- function(dat,
+filter_out_heat_stress_events_loop <- function(dat,
                                          heat_threshold = 18,
                                          n_hours = 24){
 
@@ -47,7 +43,7 @@ st_filter_out_heat_stress_events <- function(dat,
 
     dat.i <- filter(dat, STATION == station.i)
 
-    st_dat_filtered[[i]] <- filter_out_heat_stress_events(
+    st_dat_filtered[[i]] <- filter_out_heat_stress_events_single(
       dat = dat.i,
       heat_threshold = heat_threshold,
       n_hours = n_hours

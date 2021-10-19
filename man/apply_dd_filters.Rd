@@ -59,7 +59,7 @@ triggers an \code{n-hour} heat stress interval.}
 Returns \code{dat} filtered for days that will be used to calculate
 degree-days at \code{DEPTH}. Includes observations that start after the
 4-degree trending up threshold and end 1 minute before the first
-observation superchill for each season; observations that occur during a
+observation of superchill for each season; observations that occur during a
 heat stress events are removed.
 
 An additional column \code{SEASON} is included to label the growing seasons
