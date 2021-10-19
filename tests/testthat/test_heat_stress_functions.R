@@ -146,13 +146,13 @@ test_that("length of heat stress events matches expected values", {
 })
 
 
-# st_filter_out_heat_stress_events --------------------------------------------
+# filter_out_heat_stress_events --------------------------------------------
 
-dat_filt <- dat %>% st_filter_out_heat_stress_events()
+dat_filt <- dat %>% filter_out_heat_stress_events()
 
-plot_temperature_at_depth(dat_filt, facet_var = "STATION + DEPTH")
+#plot_temperature_at_depth(dat_filt, facet_var = "STATION + DEPTH")
 
-test_that("st_filter_out_heat_stress_events() removes values >= threshold", {
+test_that("filter_out_heat_stress_events() removes values >= threshold", {
 
   expect_equal(nrow(filter(dat_filt, VALUE >= 18)), 0)
 
@@ -180,7 +180,7 @@ dat4 <- dat_filt %>%
   select(-STATION, -DEPTH)
 
 
-test_that("st_filter_out_heat_stress_events() removes all heat stress events", {
+test_that("filter_out_heat_stress_events() removes all heat stress events", {
 
   expect_equal(nrow(setDT(dat1)[TIMESTAMP %inrange% check1]), 0)
   expect_equal(nrow(setDT(dat2)[TIMESTAMP %inrange% check2]), 0)
