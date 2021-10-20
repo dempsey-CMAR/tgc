@@ -27,8 +27,8 @@
 
 
 filter_out_heat_stress_events_single <- function(dat,
-                                      heat_threshold = 18,
-                                      n_hours = 24){
+                                                 heat_threshold = 18,
+                                                 n_hours = 24){
 
   dat <- dat %>%
     mutate(TIMESTAMP = as_datetime(TIMESTAMP))

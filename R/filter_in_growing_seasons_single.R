@@ -37,6 +37,8 @@
 #'   Observations may be duplicated in consecutive seasons.
 #'
 #' @importFrom data.table setDT %inrange%
+#' @importFrom dplyr filter select
+#' @importFrom purrr map_df
 
 filter_in_growing_seasons_single <- function(dat,
                                    full_season = TRUE,
