@@ -18,7 +18,7 @@
 #'
 #'   Note: intervals may overlap with previous interval(s).
 #'
-#' @importFrom dplyr mutate filter select arrange
+#' @importFrom dplyr mutate filter select arrange %>%
 #' @importFrom lubridate as_datetime hours
 #'
 #' @family heat stress

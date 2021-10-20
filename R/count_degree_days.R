@@ -15,8 +15,7 @@
 
 #' @author Danielle Dempsey
 
-#' @import dplyr summarise group_by left_join ungroup select
-
+#' @importFrom dplyr summarise group_by left_join ungroup select %>%
 #' @importFrom lubridate date parse_date_time
 
 #' @export

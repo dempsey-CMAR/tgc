@@ -23,7 +23,7 @@
 #'
 #' @importFrom expss less greater
 #' @importFrom dplyr case_when distinct group_by ungroup arrange mutate filter
-#'   summarise
+#'   summarise right_join
 #'
 #' @export
 

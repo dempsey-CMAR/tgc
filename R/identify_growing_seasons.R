@@ -51,6 +51,7 @@
 #'
 #' @importFrom lubridate as_date minutes year month days
 #' @importFrom dplyr filter full_join mutate group_by ungroup arrange select
+#'   cur_group_id
 #' @importFrom purrr map_df
 #'
 #' @export

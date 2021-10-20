@@ -16,7 +16,7 @@
 #'
 #'   A warning will be displayed if any intervals exceed \code{gap_warning}.
 #'
-#' @importFrom dplyr group_by arrange mutate select lead
+#' @importFrom dplyr group_by arrange mutate select lead right_join
 #'
 #' @export
 
