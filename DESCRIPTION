@@ -1,6 +1,6 @@
 Package: tgc
 Title: Thermal Growth Coefficient Model for Aquaculture
-Version: 0.0.2
+Version: 0.1.0
 Authors@R: 
     person(given = "Danielle",
            family = "Dempsey",
@@ -11,12 +11,13 @@ License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     data.table,
     dplyr,
     expss,
     ggplot2,
+    here,
     lubridate,
     magrittr,
     purrr,
