@@ -16,7 +16,7 @@
 #' @return Returns \code{dat}, filtered to remove observations that occur during
 #'   heat stress events.
 #'
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter select arrange mutate
 #' @importFrom lubridate as_datetime
 #' @importFrom data.table setDT %inrange%
 #' @importFrom purrr map_df
@@ -70,7 +70,9 @@ filter_out_heat_stress_events <- function(dat,
 
     }
 
-    st_dat_filtered %>% map_df(rbind)
+    st_dat_filtered %>%
+      map_df(rbind) %>%
+      arrange(STATION, TIMESTAMP)
 
   }
 
@@ -96,9 +98,9 @@ filter_out_heat_stress_events <- function(dat,
 
     }
 
-    st_dat_filtered %>% map_df(rbind)
-
-
+    st_dat_filtered %>%
+      map_df(rbind) %>%
+      arrange(SEASON, TIMESTAMP)
   }
 
   # Loop over STATION and SEASON --------------------------------------------
@@ -136,7 +138,9 @@ filter_out_heat_stress_events <- function(dat,
 
     } # end loop over stations
 
-   st_dat_filtered %>% map_df(rbind)
+   st_dat_filtered %>%
+     map_df(rbind) %>%
+     arrange(STATION, SEASON, TIMESTAMP)
 
   } # end if statement
 
