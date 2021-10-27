@@ -5,17 +5,16 @@
 #'
 #'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
 #'
+#'   Runs filter_in_growing_seasons() if no SEASON column in the data. If there
+#'   is not a full season of data, make sure to set argument full_season = FALSE
+#'   or add a SEASON column to dat
+#'
 #' @inheritParams apply_dd_filters
 #'
 #' @inheritParams identify_trending_up
 #'
 #' @param ... Additional columns in \code{dat} to use as grouping variables.
 #'   Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
-#'
-#' @param apply_season_filt Logical argument. If \code{TRUE}, observations in
-#'   \code{dat} will be assigned to seasons using the
-#'   \code{*filter_in_growing_seasons()}. If \code{dat} already has a
-#'   \code{SEASON} column, use the default \code{apply_season_filt = FALSE}.
 #'
 #' @return Returns a tibble with columns: \code{...}, \code{DEPTH},
 #'   \code{SEASON}, \code{START_SEASON} (minimum TIMESTAMP for each group),
@@ -35,8 +34,6 @@ count_growing_days <- function(dat,
                                heat_threshold = 18,
                                n_hours = 24,
 
-                               apply_season_filt = FALSE,
-
                                trend_threshold = 4,
                                superchill_threshold = -0.7,
                                max_season = 540,
@@ -44,7 +41,11 @@ count_growing_days <- function(dat,
                                ){
 
 # Define seasons if required  -------------------------------------------------------
-  if(apply_season_filt){
+  if(!("SEASON" %in% colnames(dat))){
+
+  message(paste0("SEASON column not found.
+                 \nApplying filter_in_growing_seasons() with full_season = ",
+                 full_season))
 
     dat_out <- filter_in_growing_seasons(
       dat,
@@ -63,8 +64,7 @@ count_growing_days <- function(dat,
   # identify_heat_stress_events() automatically groups by DEPTH
   filtered_days <- identify_heat_stress_events(
     dat_out,
-    ...,
-    SEASON,
+    ..., SEASON,
     heat_threshold = heat_threshold,
     n_hours = n_hours
   ) %>%
@@ -73,7 +73,7 @@ count_growing_days <- function(dat,
         difftime(stress_end, stress_start, units = "day")
       )
     ) %>%
-    group_by(SEASON, ..., DEPTH) %>%
+    group_by(..., SEASON, DEPTH) %>%
     summarize(n_filtered_days = sum(n_filtered_days)) %>%
     ungroup()
 

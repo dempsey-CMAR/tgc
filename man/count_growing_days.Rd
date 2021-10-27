@@ -9,7 +9,6 @@ count_growing_days(
   ...,
   heat_threshold = 18,
   n_hours = 24,
-  apply_season_filt = FALSE,
   trend_threshold = 4,
   superchill_threshold = -0.7,
   max_season = 540,
@@ -32,11 +31,6 @@ triggers an \code{n-hour} heat stress interval.}
 
 \item{n_hours}{Length of heat stress interval in hours (default is
 \code{n_hours = 24}).}
-
-\item{apply_season_filt}{Logical argument. If \code{TRUE}, observations in
-\code{dat} will be assigned to seasons using the
-\code{*filter_in_growing_seasons()}. If \code{dat} already has a
-\code{SEASON} column, use the default \code{apply_season_filt = FALSE}.}
 
 \item{trend_threshold}{The threshold for "trending up". Default is
 \code{trend_threshold = 4}. The last observation above
@@ -82,4 +76,8 @@ Days suitable for growth are days that remain after applying season
 and heat stress filters (\code{apply_dd_filters()}).
 
 Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
+
+Runs filter_in_growing_seasons() if no SEASON column in the data. If there
+is not a full season of data, make sure to set argument full_season = FALSE
+or add a SEASON column to dat
 }
