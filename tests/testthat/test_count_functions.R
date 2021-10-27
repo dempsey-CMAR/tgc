@@ -4,97 +4,96 @@ library(dplyr)
 library(tgc)
 
 
-# Set up test data where TIMESTAMP of exceedences is specified ------------
+source(system.file("testdata/test_data.R", package = "tgc"))
 
-# 15-minute TIMESTAMP for 1 month
-# start for 15 mins before July 1 so SEASON starts July 1
-TIMESTAMP1 <- tibble(TIMESTAMP = seq(as_datetime("2021-06-30 23:45:00"),
-                                    as_datetime("2021-07-31"),
-                                    by = "15 min"))
+# rm(exceed1, exceed2, exceed3, exceed4)
 
 
-# TIMESTAMP for exceedences for each STATION and DEPTH
-exceed1 <- c(TIMESTAMP1$TIMESTAMP[10], TIMESTAMP1$TIMESTAMP[1000], TIMESTAMP1$TIMESTAMP[2000])
+# Partial SEASONs, as defined in dat ---------------------------------------------
 
-# fake data for 1 STATION, DEPTH and SEASON
-set.seed(1809)
-dat1 <- TIMESTAMP1 %>%
-  mutate(
-    STATION = "Station1", DEPTH = 2, VALUE = rnorm(n(), 10, 1.5),
-    VALUE = case_when(
-      TIMESTAMP %in% exceed1 ~ 20,
-      TIMESTAMP == min(TIMESTAMP) ~ 3,
-      TRUE ~ VALUE)
-  )
+# remove first row of each group
+dat2 <- dat %>%
+  group_by(STATION, SEASON, DEPTH) %>%
+  mutate(INDEX = 1:n()) %>%
+  filter(INDEX != 1) %>%
+  select(-INDEX) %>%
+  ungroup()
 
-#plot_temperature_at_depth(dat1)
+#plot_temperature_at_depth(dat2, facet_var = "STATION")
 
-n_growing <- count_growing_days(dat1, apply_season_filt = TRUE, full_season = FALSE)
+n_growing <- count_growing_days(dat2, STATION)
 
+growing_st1 <- filter(n_growing, STATION == "Station1")
+growing_st2 <- filter(n_growing, STATION == "Station2")
 
-test_that("count_growing_seasons() outputs expected results for one season",{
+# check that function returned same result for both STATIONS
+test_that("count_growing_days() worked for both stations",{
 
-  expect_equal(n_growing$STOCKED_DAYS, 30)
-  expect_equal(n_growing$n_growing_days, 27)
+  expect_equal(select(growing_st1, -STATION), select(growing_st2, -STATION))
 
 })
 
-# Add another season
-TIMESTAMP2 <- tibble(TIMESTAMP = seq(as_datetime("2022-01-31 23:45:00"),
-                                    as_datetime("2022-02-28"),
-                                    by = "15 min"))
+test_that("count_growing_days() outputs expected results",{
 
+  expect_equal(growing_st1$STOCKED_DAYS, c(30, 30, 27, 27))
+  # 5 24-hour heat stress intervals/events for S1, DEPTH = 5 and S2 DEPTH = 2
+  # Overlapping heat stress intervals result in partial days filtered out
+  # for S1 DEPTH = 2 and S2 DEPTH = 5
+  expect_equal(growing_st1$n_growing_days, c(22.46, 25.00, 22.00, 21.46))
 
-# TIMESTAMP for exceedences for each STATION and DEPTH
-exceed2 <- c(TIMESTAMP2$TIMESTAMP[100], TIMESTAMP2$TIMESTAMP[1574], TIMESTAMP2$TIMESTAMP[270])
+})
 
-# fake data for 1 STATION, DEPTH and SEASON
-set.seed(451)
-dat2 <- TIMESTAMP2 %>%
-  mutate(
-    STATION = "Station1", DEPTH = 2, VALUE = rnorm(n(), 10, 1.5),
-    VALUE = case_when(
-      TIMESTAMP %in% exceed2 ~ 20,
-      TIMESTAMP == min(TIMESTAMP) ~ 3,
-      TRUE ~ VALUE)
-  )
+# check that function will assign SEASON if there is no SEASON column
+dat3 <- dat2 %>% select(-SEASON)
 
-dat <- rbind(dat1, dat2)
+growing_dat3 <- suppressMessages(count_growing_days(dat3, STATION, full_season = FALSE))
 
-#plot_temperature_at_depth(dat)
+test_that("count_growing_days() adds SEASON column if none exists", {
 
-n_growing <- count_growing_days(dat, apply_season_filt = TRUE, full_season = FALSE)
+  expect_message(count_growing_days(dat3, STATION, full_season = FALSE))
 
-
-test_that("count_growing_seasons() outputs expected results for two seasons",{
-
-  expect_equal(n_growing$STOCKED_DAYS, c(242, 27))
-  expect_equal(n_growing$n_growing_days, c(236, 24))
+  expect_true("SEASON" %in% colnames(growing_dat3))
 
 })
 
 
-# degree days -------------------------------------------------------------
+# Degree-Day function -----------------------------------------------------
 
-dd <- count_degree_days(dat1, apply_season_filt = TRUE, full_season = FALSE)
+# expected averages based on how the data was generated:
+# S1 2 m: 14 deg C; S1 5 m: 10 deg C
+# S2 2 m: 14 deg C S2 5 m: 10 deg C
 
-test_that("count_degree_days() outputs expected results for one season",{
+dd <- count_degree_days(dat2, STATION)
 
-  expect_equal(dd$AVG_TEMPERATURE, 10.011)
-  expect_equal(dd$n_degree_days, 270.3)
+dd_st1 <- filter(dd, STATION == "Station1")
+dd_st2 <- filter(dd, STATION == "Station2")
 
-})
+# check that function returned same result for both STATIONS
+test_that("count_degree_days() worked for both stations",{
 
-
-dd2 <- count_degree_days(dat, apply_season_filt = TRUE, full_season = FALSE)
-
-test_that("count_degree_days() outputs expected results for two seasons",{
-
-  expect_equal(dd2$AVG_TEMPERATURE, 10.011)
-  expect_equal(dd2$n_degree_days, 270.3)
+  expect_equal(select(dd_st1, -STATION), select(dd_st2, -STATION))
 
 })
 
+# check that function returns expected output
+test_that("count_degree_days() outputs expected avg temp and degree days", {
 
+  expect_equal(round(dd_st1$AVG_TEMPERATURE, digits = 0), c(14, 10, 14, 10))
 
+  expect_equal(round(dd_st1$n_degree_days, digits = 0), c(314, 250, 308, 215))
+
+})
+
+# check that function will assign SEASON if there is no SEASON column
+dat3 <- dat2 %>% select(-SEASON)
+
+dd_dat3 <- suppressMessages(count_degree_days(dat3, STATION, full_season = FALSE))
+
+test_that("count_growing_days() adds SEASON column if none exists", {
+
+  expect_message(count_growing_days(dat3, STATION, full_season = FALSE))
+
+  expect_true("SEASON" %in% colnames(growing_dat3))
+
+})
 

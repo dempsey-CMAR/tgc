@@ -43,11 +43,11 @@ count_growing_days <- function(dat,
 # Define seasons if required  -------------------------------------------------------
   if(!("SEASON" %in% colnames(dat))){
 
-  message(paste0("SEASON column not found.
+    message(paste0("SEASON column not found.
                  \nApplying filter_in_growing_seasons() with full_season = ",
-                 full_season))
+                   full_season))
 
-    dat_out <- filter_in_growing_seasons(
+    dat <- filter_in_growing_seasons(
       dat,
       trend_threshold = trend_threshold,
       superchill_threshold = superchill_threshold,
@@ -55,15 +55,15 @@ count_growing_days <- function(dat,
       full_season = full_season
     )
 
-  } else {
+  } #else {
 
-    dat_out <- dat
-  }
+  #  dat_out <- dat
+ #}
 
   # number of days filtered out due to heat stress events for each SEASON, DEPTH, and ...
   # identify_heat_stress_events() automatically groups by DEPTH
   filtered_days <- identify_heat_stress_events(
-    dat_out,
+    dat,
     ..., SEASON,
     heat_threshold = heat_threshold,
     n_hours = n_hours
@@ -78,7 +78,7 @@ count_growing_days <- function(dat,
     ungroup()
 
   # subtract number of heat stress days from total number of days in season
-  dat_out %>%
+  dat %>%
     group_by(..., SEASON, DEPTH) %>%
     summarise(
       START_SEASON = min(TIMESTAMP),

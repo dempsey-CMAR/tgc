@@ -9,6 +9,8 @@
 #'
 #' @inheritParams count_growing_days
 #'
+
+#'
 #' @return Returns a tibble with columns:
 
 #' @family calculate
@@ -25,7 +27,7 @@ count_degree_days <- function(dat,
                               heat_threshold = 18,
                               n_hours = 24,
 
-                              apply_season_filt = FALSE,
+                              # apply_season_filt = FALSE,
 
                               trend_threshold = 4,
                               superchill_threshold = -0.7,
@@ -33,43 +35,82 @@ count_degree_days <- function(dat,
                               full_season = TRUE){
 
 
-# Define seasons (if not already defined in dat)  ------------------------------------------------------
+  # Define seasons (if not already defined in dat)  ------------------------------------------------------
+  #
 
-  if(apply_season_filt) {
 
-    # automatically groups by STATION and DEPTH if required
+  #   if(apply_season_filt) {
+  #
+  #     # automatically groups by STATION and DEPTH if required
+  #     dat <- filter_in_growing_seasons(
+  #       dat,
+  #       trend_threshold = trend_threshold,
+  #       superchill_threshold = superchill_threshold,
+  #       max_season = max_season,
+  #       full_season = full_season)
+  #
+  #   }
+  #
+  #   if(!("SEASON" %in% colnames(dat))) {
+  #
+  #     stop("SEASON column not found.
+  #          \nHINT: Add SEASON column to dat and set argument apply_season_filt to FALSE")
+  #   }
+
+  # Define seasons if required  -------------------------------------------------------
+  # if(!("SEASON" %in% colnames(dat))){
+  #
+  #   message(paste0("SEASON column not found.
+  #                \nApplying filter_in_growing_seasons() with full_season = ",
+  #                  full_season))
+  #
+  #   dat_out <- filter_in_growing_seasons(
+  #     dat,
+  #     trend_threshold = trend_threshold,
+  #     superchill_threshold = superchill_threshold,
+  #     max_season = max_season,
+  #     full_season = full_season
+  #   )
+  #
+  # } else {
+  #
+  #   dat_out <- dat
+  # }
+
+  # browser()
+
+  if(!("SEASON" %in% colnames(dat))){
+
+    message(paste0("SEASON column not found.
+                 \nApplying filter_in_growing_seasons() with full_season = ",
+                   full_season))
+
     dat <- filter_in_growing_seasons(
       dat,
       trend_threshold = trend_threshold,
       superchill_threshold = superchill_threshold,
       max_season = max_season,
-      full_season = full_season)
+      full_season = full_season
+    )
 
   }
 
-  if(!("SEASON" %in% colnames(dat))) {
 
-    stop("SEASON column not found.
-         \nHINT: Add SEASON column to dat and set argument apply_season_filt to FALSE")
-  }
-
-
-# Count growing days in each group (SEASON, DEPTH, ...) -------------------
+  # Count growing days in each group (SEASON, DEPTH, ...) -------------------
 
   growing_days <- count_growing_days(
     dat,
     ...,                              # automatically grouped by SEASON and DEPTH
-    apply_season_filt = FALSE,        # season defined above
+    #apply_season_filt = FALSE,        # season defined above
     heat_threshold = heat_threshold,
     n_hours = n_hours
   )
 
 
-# Count degree-days for each group  -------------------------------------------------------
+  # Count degree-days for each group  -------------------------------------------------------
 
   dat %>%
-    filter_out_heat_stress_events(
-      ...,
+    filter_out_heat_stress_events(     # automatically grouped by STATION and/or SEASON and DEPTH
       heat_threshold = heat_threshold,
       n_hours = n_hours
     ) %>%

@@ -20,8 +20,10 @@
 #'
 #' @return Returns \code{dd_table} additional columns \code{INITIAL_WEIGHT},
 #'   \code{TGC}, and \code{TGC_FINAL_WEIGHT}.
+#'
+#' @importFrom dplyr mutate full_join %>% select
+#'
 #' @export
-
 
 TGC_calculate_final_weight <-function(dd_table,
                                       initial_weight,
@@ -65,6 +67,8 @@ TGC_calculate_final_weight <-function(dd_table,
 #' @return Returns \code{dd_table} additional columns \code{FINAL_WEIGHT},
 #'   \code{TGC}, and \code{TGC_INITIAL_WEIGHT}.
 #'
+#' @importFrom dplyr n %>% full_join mutate select
+#'
 #' @export
 
 TGC_calculate_initial_weight <- function(dd_table,
@@ -99,6 +103,8 @@ TGC_calculate_initial_weight <- function(dd_table,
 #'
 #' @return Returns a table with columns \code{INITIAL_WEIGHT},
 #'   \code{FINAL_WEIGHT}, \code{TGC}, and \code{TGC_DEGREE_DAYS}.
+#'
+#' @importFrom dplyr mutate
 #'
 #' @export
 
