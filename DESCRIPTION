@@ -1,6 +1,6 @@
 Package: tgc
 Title: Thermal Growth Coefficient Model for Aquaculture
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Danielle",
            family = "Dempsey",

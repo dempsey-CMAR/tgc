@@ -1,3 +1,28 @@
+# October 28, 2021
+
+# test data
+# Two stations, two depths and two seasons each
+# data for Station1 and Station2 is the same
+
+## For test_season_functions.R:
+# to trigger a new season from identify_trending_up() and identify_growing_seasons(),
+## lag(VALUE) < trend_threshold & VALUE >= trend_threshold (default trend_threshold = 4)
+## For test data:
+### the first observation for S1, DEPTH = 2 is 4 deg C, which will NOT trigger a season start
+### the first observation for S1, DEPTH = 5 is 3 deg C, which WILL trigger season start
+
+# to trigger end of season from, identify_first_superchill() and identify_growing_seasons():
+# lag(VALUE) > superchill_threshold & VALUE <= superchill_threshold (default superchill_threshold = -0.7)
+## observations to trigger end of season are added in test_season_functions.R
+## Observations of -0.7 deg C at the end of February for DEPTH = 2 m
+## no superchill for DEPTH = 5 m
+
+## For test_heat_stress_functions.R:
+# Values are added at known TIMESTAMPS to trigger heat stress functions
+# To trigger heat stress interval, VALUE >= heat_threshold (default heat_threshold = 18)
+# For S1, DEPTH = 2, observations of 18 deg C are added, which DO trigger heat stress
+
+
 library(tgc)
 library(dplyr)
 library(lubridate)
@@ -15,8 +40,13 @@ exceed1 <- c(exceed1, exceed1[c(1, 4, 6)] + hours(c(1, 12, 24))) # overlapping i
 
 exceed2 <- S1$TIMESTAMP[seq(10, nrow(S1), by = 600)]
 
-# SEASON 2: 1 month of data in January
-# this will be counted as the END of S1 and the
+
+
+
+
+
+# SEASON 2: 1 month of data in February
+# this will be counted as the END of S1 and the beginning of S2
 S2 <- tibble(TIMESTAMP = seq(as_datetime("2022-01-31 23:45:00"),
                              as_datetime("2022-02-28"),
                              by = "15 min"),

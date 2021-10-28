@@ -1,9 +1,14 @@
 # October 21, 2021
 # Test heat stress functions
+
 # test data has 2 stations, 2 seasons, 2 depths
-# data for Sation1 is the same as for Station2, so the first test in each
+## data for Station1 is the same as for Station2, so the first test in each
 ## section verifies that the results are the same for each station.
 ## The remaining tests are run for Station1
+
+# Note that VALUE = threshold (18) is flagged by identify_heat_stress_intervals()
+## and subsequently filtered out by filter_out_heat_stress_events()
+## example: Station1, DEPTH = 2 has 9 instances of VALUE = 18 that are filtered
 
 library(lubridate)
 library(data.table)
