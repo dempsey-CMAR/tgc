@@ -31,10 +31,10 @@ identify_heat_stress_events <- function(dat,
                                         heat_threshold = 18,
                                         n_hours = 24){
 
-  ints <- identify_heat_stress_intervals(dat = dat,
-                                           ...,
-                                           heat_threshold = heat_threshold,
-                                           n_hours = n_hours) %>%
+  ints <- identify_heat_stress_intervals(dat,
+                                         ...,
+                                         heat_threshold = heat_threshold,
+                                         n_hours = n_hours) %>%
     dplyr::group_by(..., DEPTH) %>%
     dplyr::arrange(interval_start, .by_group = TRUE) %>%
     dplyr::mutate(
@@ -88,7 +88,9 @@ identify_heat_stress_events <- function(dat,
            int_id == 3 && int_id_lead == 2 |
            int_id == 3 && int_id_lead == 3 ){
 
-          stop("something weird happened with assigning heat stress event int_ids")
+          stop("Problem identifying heat stress events.
+               \n HINT: If dat has a STATION column, make sure STATION is
+               defined as a grouping variable in identify_heat_stress_events()")
 
         }
       )
