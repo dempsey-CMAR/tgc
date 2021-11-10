@@ -1,19 +1,37 @@
-# NOTE: only S1, DEPTH = 2 m will have an END_SEASON
-## there is no superchill for S1, DEPTH = 5 AND
-## the function is looking for superchill **in the next year** for S2
+# October 29, 2021
+
+# test data has 2 stations, 2 seasons, 2 depths
+## data for Station1 is the same as for Station2, so the first test in each
+## section verifies that the results are the same for each station.
+## The remaining tests are run for Station1
+
+# To trigger a new season:
+## lag(VALUE) < trend_threshold & VALUE >= trend_threshold (default trend_threshold = 4)
+## For test data:
+### the first observation for S1, DEPTH = 2 is 4 deg C, which DOES NOT trigger a season start
+### the first observation for S1, DEPTH = 5 is 3 deg C, which DOES trigger season start
+
+# To trigger end of season:
+## lag(VALUE) > superchill_threshold & VALUE <= superchill_threshold (default superchill_threshold = -0.7)
+## For test data:
+## S1, DEPTH = 2: obs of -0.7 deg C were added at the end of February 2022, so
+## season end IS triggered.
+## S1, DEPTH = 5, No superchill obs were added, so season end is NOT triggered.
+## For S2: the function is looking for superchill **in the next calendar year**
+## (no observation) so there will be no season end for either depth for S2
+
+# Set up ------------------------------------------------------------------
 
 library(tgc)
 library(dplyr)
 library(lubridate)
-
-# Set up ------------------------------------------------------------------
 
 source(system.file("testdata/test_data.R", package = "tgc"))
 
 # plot_temperature_at_depth(dat, facet_var = "STATION")
 
 # find first value for each season (first obs is BEFORE the beginning of the season)
-# note that for S1, DEPTH = 2, START_TREND should be NA because there are
+# NOTE: for S1, DEPTH = 2, START_TREND should be NA because there are
 # no observations < 4
 check_trend <- dat %>%
   group_by(STATION, SEASON, DEPTH) %>%
@@ -24,6 +42,7 @@ check_trend <- dat %>%
   mutate(START_TREND = if_else(SEASON == "S1" & DEPTH == 2,
                                as_datetime(NA_character_), START_TREND))
 
+# remove SEASON column so it will be assigned by functions
 dat <- select(dat, -SEASON)
 
 #  identify_trending_up() --------------------------------------------------
@@ -46,12 +65,15 @@ test_that("identify_trending_up() output expected results",{
 
 })
 
+rm(trend_up, trend_st1, trend_st2)
+
 #  identify_first_superchill() --------------------------------------------------
 
-# first superchill will be at max(dat$TIMESTAMP) + minutes (15) for DEPTH = 2
-# no superchill for DEPTH = 5
+# add superchill observations
+# for DEPTH = 2: season end will be at max(dat$TIMESTAMP) + minutes (15)
+# for DEPTH = 5: no superchill so season end will be NA
 dat_chill <- tibble(TIMESTAMP = max(dat$TIMESTAMP) + minutes(c(15, 30, 45)),
-                   STATION = "Station1", DEPTH = 2, VALUE = -0.7) %>%
+              STATION = "Station1", DEPTH = 2, VALUE = -0.7) %>%
   rbind(
     tibble(TIMESTAMP = max(dat$TIMESTAMP) + minutes(c(15, 30, 45)),
            STATION = "Station2", DEPTH = 2, VALUE = -0.7)
@@ -74,7 +96,7 @@ test_that("identify_first_superchill() worked for both stations",{
 
 })
 
-
+# first observation of superchill
 chill_match <- c(max(dat$TIMESTAMP) + minutes(15), NA)
 
 test_that("identify_first_superchill() outputs expected results",{
@@ -128,8 +150,8 @@ test_that("identify_growing_seasons(dat, full_season = FALSE) returns expected r
   expect_equal(as.character(p_seasons_st1$START_SEASON),
                c("2021-06-30 23:45:00",    # first obs = 4
                  "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
-                 "2022-02-01 00:00:00",
-                 "2022-02-01 00:00:00"))
+                 "2022-02-01 00:00:00",    # first obs < 4 & second obs > 4
+                 "2022-02-01 00:00:00"))   # first obs < 4 & second obs > 4
 
   expect_equal(as.character(p_seasons_st1$END_SEASON),
                c("2022-02-28 00:14:00",    # first superchill
@@ -141,6 +163,7 @@ test_that("identify_growing_seasons(dat, full_season = FALSE) returns expected r
 
 
 # filter_in_growing_seasons() ---------------------------------------------
+
 dat_filt <- filter_in_growing_seasons(dat_chill, full_season = FALSE)
 
 filt <- dat_filt %>%
@@ -176,8 +199,3 @@ test_that("identify_growing_seasons(dat, full_season = FALSE) returns expected r
 
 })
 
-
-
-
-
-# plot_temperature_at_depth(dat_filt, facet_var = "STATION + SEASON")

@@ -1,3 +1,13 @@
+# October 29, 2021
+
+# test data has 2 stations, 2 seasons, 2 depths
+## data for Station1 is the same as for Station2, so the first test in each
+## section verifies that the results are the same for each station.
+## The remaining tests are run for Station1
+
+
+# Set up ------------------------------------------------------------------
+
 library(lubridate)
 library(data.table)
 library(dplyr)
@@ -7,7 +17,6 @@ library(tgc)
 source(system.file("testdata/test_data.R", package = "tgc"))
 
 # rm(exceed1, exceed2, exceed3, exceed4)
-
 
 # Partial SEASONs, as defined in dat ---------------------------------------------
 
@@ -36,6 +45,7 @@ test_that("count_growing_days() worked for both stations",{
 test_that("count_growing_days() outputs expected results",{
 
   expect_equal(growing_st1$STOCKED_DAYS, c(30, 30, 27, 27))
+
   # 5 24-hour heat stress intervals/events for S1, DEPTH = 5 and S2 DEPTH = 2
   # Overlapping heat stress intervals result in partial days filtered out
   # for S1 DEPTH = 2 and S2 DEPTH = 5
@@ -61,7 +71,7 @@ test_that("count_growing_days() adds SEASON column if none exists", {
 
 # expected averages based on how the data was generated:
 # S1 2 m: 14 deg C; S1 5 m: 10 deg C
-# S2 2 m: 14 deg C S2 5 m: 10 deg C
+# S2 2 m: 12 deg C S2 5 m: 11 deg C
 
 dd <- count_degree_days(dat2, STATION)
 
@@ -78,9 +88,9 @@ test_that("count_degree_days() worked for both stations",{
 # check that function returns expected output
 test_that("count_degree_days() outputs expected avg temp and degree days", {
 
-  expect_equal(round(dd_st1$AVG_TEMPERATURE, digits = 0), c(14, 10, 14, 10))
+  expect_equal(round(dd_st1$AVG_TEMPERATURE, digits = 0), c(14, 10, 12, 11))
 
-  expect_equal(round(dd_st1$n_degree_days, digits = 0), c(314, 250, 308, 215))
+  expect_equal(round(dd_st1$n_degree_days, digits = 0), c(314, 250, 264, 236))
 
 })
 

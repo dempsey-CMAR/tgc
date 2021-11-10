@@ -6,13 +6,24 @@
 ## section verifies that the results are the same for each station.
 ## The remaining tests are run for Station1
 
-# Note that VALUE = threshold (18) is flagged by identify_heat_stress_intervals()
-## and subsequently filtered out by filter_out_heat_stress_events()
-## example: Station1, DEPTH = 2 has 9 instances of VALUE = 18 that are filtered
+# Heat stress obs are added at known TIMESTAMPS to trigger heat stress functions
+# To trigger heat stress interval, VALUE >= heat_threshold (default heat_threshold = 18)
+# For S1, DEPTH = 2, observations of 18 deg C are added, which DO trigger heat stress
 
-library(lubridate)
+# S1, DEPTH = 2: 9 heat stress intervals, 6 heat stress events
+## Note: two of the above heat stress intervals are 24 hours apart
+## and result in 1 48-hour heat stress event
+# S1, DEPTH = 5: 5 heat stress intervals, 5 heat stress events
+
+# S2, DEPTH = 2: 5 heat stress intervals, 5 heat stress events
+# S2, DEPTH = 5: 6 heat stress intervals, 5 heat stress events
+
+
+# Set up ------------------------------------------------------------------
+
 library(data.table)
 library(dplyr)
+library(lubridate)
 library(tgc)
 
 source(system.file("testdata/test_data.R", package = "tgc"))
@@ -27,6 +38,7 @@ dat <- dat[rows, ]
 
 # identify_heat_stress_interval -------------------------------------------
 
+# don't need the SEASON group here
 heat_stress_int <- identify_heat_stress_intervals(dat, STATION, SEASON)  %>%
   mutate(DIFF = difftime(interval_end, interval_start, unit = "hour"))
 
@@ -145,7 +157,7 @@ test_that("filter_out_heat_stress_events() worked for both stations",{
 
 })
 
-# check there are
+# check there are no observations above the heat stress threshold
 test_that("filter_out_heat_stress_events() removes values >= threshold", {
 
   expect_equal(nrow(filter(filt_st1, VALUE >= 18)), 0)
