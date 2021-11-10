@@ -87,7 +87,8 @@ utils::globalVariables(c(
   "INITIAL_WEIGHT",
   "TGC_INITIAL_WEIGHT",
   "TGC",
-  "INDEX"
+  "INDEX",
+  "CHECK"
 
 ))
 

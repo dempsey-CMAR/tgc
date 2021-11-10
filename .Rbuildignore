@@ -5,3 +5,5 @@
 
 .pptx
 
+^README\.Rmd$
+^\.github$
