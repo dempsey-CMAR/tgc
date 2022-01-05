@@ -1,3 +1,6 @@
+# November 15, 2021
+
+# test TGC functions
 
 library(ddpcr) # to suppress print from error message
 library(dplyr)
@@ -45,14 +48,13 @@ test_that("TGC functions have correct number of rows", {
 
 test_that("TGC_calculate_degree_days() will stop with error if final_weight is less than intial_weight",{
 
-
   expect_error(
-    quiet(TGC_calculate_degree_days(initial_weight = 5, final_weight = 4, tgc = 0.3))
+    ddpcr:quiet(TGC_calculate_degree_days(initial_weight = 5, final_weight = 4, tgc = 0.3))
   )
 
 })
 
-
+# set up values to compare
 initial_check <- filter(TGC_final_weight, n_degree_days == 100, TGC == 0.3)
 
 initial <- TGC_calculate_initial_weight(
@@ -71,27 +73,20 @@ final <- TGC_calculate_final_weight(
 )
 
 
-TGC_calculate_degree_days(initial_weight = final_check$TGC_INITIAL_WEIGHT,
+dd_check <- TGC_calculate_degree_days(initial_weight = final_check$TGC_INITIAL_WEIGHT,
                           final_weight =  final_check$FINAL_WEIGHT,
-                          tgc = 0.3)
-
-expect_equal(initial_check$INITIAL_WEIGHT, initial$TGC_INITIAL_WEIGHT)
-
-expect_equal(final_check$FINAL_WEIGHT, final$TGC_FINAL_WEIGHT)
+                          tgc = 0.3) %>%
+  filter(TGC_DEGREE_DAYS < 200)
 
 
+test_that("TGC functions output expected results", {
 
-n_rows <- nrow(dd)
-params <- expand.grid(INDEX = c(1:n_rows),
-                      TGC = tgc,
-                      INITIAL_WEIGHT = initial_weight)
+  expect_equal(initial_check$INITIAL_WEIGHT, initial$TGC_INITIAL_WEIGHT)
+
+  expect_equal(final_check$FINAL_WEIGHT, final$TGC_FINAL_WEIGHT)
+
+  expect_equal(round(dd_check$TGC_DEGREE_DAYS), c(100, 100))
+
+})
 
 
-dd %>%
-  mutate(INDEX = c(1:n())) %>%
-  full_join(params, by = "INDEX") %>%
-  mutate(
-    TGC_FINAL_WEIGHT = (INITIAL_WEIGHT^(1/3) + (TGC/1000) * n_degree_days)^3,
-    TGC_FINAL_WEIGHT = round(TGC_FINAL_WEIGHT, digits = 2)
-  ) %>%
-  select(-INDEX)
