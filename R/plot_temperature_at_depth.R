@@ -92,6 +92,22 @@ plot_temperature_at_depth <- function(dat,
 
   if(is.null(colour_palette)) colour_palette <- strings::get_colour_palette(dat)
 
+  axis.breaks <- strings::get_xaxis_breaks(dat)
+
+  if(!is.null(date_breaks_major)) axis.breaks$date.breaks.major <- date_breaks_major
+  if(!is.null(date_breaks_minor)) axis.breaks$date.breaks.minor <- date_breaks_minor
+  if(!is.null(date_labels_format)) axis.breaks$date.labels.format <- date_labels_format
+
+  x_scale <-  scale_x_datetime(
+    name = "Date",
+    date_breaks = axis.breaks$date.breaks.major,
+    date_minor_breaks = axis.breaks$date.breaks.minor,
+    date_labels =  axis.breaks$date.labels.format
+  )
+
+
+# figure ------------------------------------------------------------------
+
   p <- ggplot(dat, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
     annotate("rect",
              xmin = as_datetime(-Inf), xmax = as_datetime(Inf),
@@ -112,23 +128,6 @@ plot_temperature_at_depth <- function(dat,
     theme(strip.background = element_rect(fill = NA),
           strip.text = element_text(color = "black", hjust = 0))
 
-  if(is.null(facet_var)){
-
-    axis.breaks <- strings::get_xaxis_breaks(dat)
-
-    if(!is.null(date_breaks_major)) axis.breaks$date.breaks.major <- date_breaks_major
-    if(!is.null(date_breaks_minor)) axis.breaks$date.breaks.minor <- date_breaks_minor
-    if(!is.null(date_labels_format)) axis.breaks$date.labels.format <- date_labels_format
-
-    p <- p +
-      scale_x_datetime(
-        name = "Date",
-        date_breaks = axis.breaks$date.breaks.major,
-        date_minor_breaks = axis.breaks$date.breaks.minor,
-        date_labels =  axis.breaks$date.labels.format
-      )
-  }
-
 
   if(is.character(facet_var))  {
 
@@ -136,11 +135,13 @@ plot_temperature_at_depth <- function(dat,
 
     p <- p +
       facet_wrap(facet_var, ncol = ncol, nrow = nrow,
-                 labeller = label_wrap_gen(multi_line=FALSE)) +
-      scale_x_datetime(name = "Date")
+                 labeller = label_wrap_gen(multi_line=FALSE))
   }
+  # if(is.null(facet_var)){
 
-  p
+
+  #}
+  p + x_scale
 }
 
 
