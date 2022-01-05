@@ -41,7 +41,7 @@ TGC_calculate_final_weight <-function(dd_table,
     full_join(params, by = "INDEX") %>%
     mutate(
       TGC_FINAL_WEIGHT = (INITIAL_WEIGHT^(1/3) + (TGC/1000) * n_degree_days)^3,
-      TGC_FINAL_WEIGHT = round(TGC_FINAL_WEIGHT, digits = 2),
+      TGC_FINAL_WEIGHT = round(TGC_FINAL_WEIGHT, digits = 4),
       CHECK = TGC_FINAL_WEIGHT > INITIAL_WEIGHT
     ) %>%
     select(-INDEX)
@@ -98,7 +98,7 @@ TGC_calculate_initial_weight <- function(dd_table,
     full_join(params, by = "INDEX") %>%
     mutate(
       TGC_INITIAL_WEIGHT = (FINAL_WEIGHT^(1/3) - (TGC/1000)*n_degree_days)^3,
-      TGC_INITIAL_WEIGHT = round(TGC_INITIAL_WEIGHT, digits = 2),
+      TGC_INITIAL_WEIGHT = round(TGC_INITIAL_WEIGHT, digits = 4),
       CHECK = FINAL_WEIGHT > TGC_INITIAL_WEIGHT
     ) %>%
     select(-INDEX)
@@ -137,10 +137,13 @@ TGC_calculate_degree_days <- function(initial_weight,
 
 
   # make a table with all combinations of TGC and initial weight
+  # filter for FINAL_WEIGHT > INITIAL_WEIGHT in case any values in initial_weight
+  # are greater than any values in final_weight
   params <- expand.grid(INITIAL_WEIGHT = initial_weight,
                         FINAL_WEIGHT = final_weight,
                         TGC = tgc) %>%
-    mutate(CHECK = FINAL_WEIGHT > INITIAL_WEIGHT)
+    mutate(CHECK = FINAL_WEIGHT > INITIAL_WEIGHT) %>%
+    filter(CHECK)
 
   if(sum(params$CHECK) < nrow(params)){
 
@@ -153,7 +156,8 @@ TGC_calculate_degree_days <- function(initial_weight,
   # calculate degree days for each row and return
   params %>%
     mutate(
-      TGC_DEGREE_DAYS =  (FINAL_WEIGHT^(1/3) - INITIAL_WEIGHT^(1/3) ) * 1000/TGC
+      TGC_DEGREE_DAYS =  (FINAL_WEIGHT^(1/3) - INITIAL_WEIGHT^(1/3) ) * 1000/TGC,
+      TGC_DEGREE_DAYS = round(TGC_DEGREE_DAYS, digits = 2)
     ) %>%
     select(-CHECK)
 
