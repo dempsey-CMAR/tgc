@@ -22,6 +22,7 @@
 #' @importFrom dplyr mutate select group_by arrange summarise ungroup lead lag
 #'   case_when
 #' @importFrom purrr map_df
+#' @importFrom lubridate as_datetime
 #'
 #' @export
 
@@ -42,8 +43,8 @@ identify_heat_stress_events <- function(dat,
       distinct(..., DEPTH) %>%
       mutate(
         event_id = NA,
-        stress_start = NA_POSIXct_,
-        stress_end = NA_POSIXct_
+        stress_start = as_datetime(NA),
+        stress_end = as_datetime(NA)
       )
 
   } else{
