@@ -34,90 +34,106 @@ identify_heat_stress_events <- function(dat,
   ints <- identify_heat_stress_intervals(dat,
                                          ...,
                                          heat_threshold = heat_threshold,
-                                         n_hours = n_hours) %>%
-    dplyr::group_by(..., DEPTH) %>%
-    dplyr::arrange(interval_start, .by_group = TRUE) %>%
-    dplyr::mutate(
+                                         n_hours = n_hours)
 
-      # overlap with previous interval?
-      overlap_lag = interval_start <= dplyr::lag(interval_end),
-      # first observation cannot over lap with previous
-      overlap_lag = if_else(
-        interval_start == min(interval_start), FALSE, overlap_lag
-      ),
+  if(nrow(ints) == 0){
 
-      # overlap with next interval?
-      overlap_lead = dplyr::lead(interval_start) <= interval_end,
-      # last observation cannot over lap with next
-      overlap_lead = if_else(
-        interval_start == max(interval_start), FALSE, overlap_lead
-      ),
+    dat %>%
+      distinct(..., DEPTH) %>%
+      mutate(
+        event_id = NA,
+        stress_start = NA_POSIXct_,
+        stress_end = NA_POSIXct_
+      )
 
-      int_id = case_when(
+  } else{
 
-        overlap_lag == FALSE & overlap_lead == FALSE ~ 99, # single obs event
-        overlap_lag == FALSE & overlap_lead == TRUE ~ 1,   # beginning of event
-        overlap_lag == TRUE & overlap_lead == TRUE ~ 2,    # middle of event
-        overlap_lag == TRUE & overlap_lead == FALSE ~ 3    # end of event
+    ints <- ints %>%
+      dplyr::group_by(..., DEPTH) %>%
+      dplyr::arrange(interval_start, .by_group = TRUE) %>%
+      dplyr::mutate(
 
-      ),
+        # overlap with previous interval?
+        overlap_lag = interval_start <= dplyr::lag(interval_end),
+        # first observation cannot over lap with previous
+        overlap_lag = if_else(
+          interval_start == min(interval_start), FALSE, overlap_lag
+        ),
 
-      int_id_lead = lead(int_id)
-    ) %>%
-    ungroup()
+        # overlap with next interval?
+        overlap_lead = dplyr::lead(interval_start) <= interval_end,
+        # last observation cannot over lap with next
+        overlap_lead = if_else(
+          interval_start == max(interval_start), FALSE, overlap_lead
+        ),
 
-  events_out <- list()
+        int_id = case_when(
 
-  k <- 1 # id counter
+          overlap_lag == FALSE & overlap_lead == FALSE ~ 99, # single obs event
+          overlap_lag == FALSE & overlap_lead == TRUE ~ 1,   # beginning of event
+          overlap_lag == TRUE & overlap_lead == TRUE ~ 2,    # middle of event
+          overlap_lag == TRUE & overlap_lead == FALSE ~ 3    # end of event
 
-  for(i in seq_along(1:nrow(ints))){
+        ),
 
-    int.i <- ints[i, ]
+        int_id_lead = lead(int_id)
+      ) %>%
+      ungroup()
 
-    # stop with error if any id combos that should not exist
-    # e.g., can't have 99 (no overlaps) followed by 2 (overlap with previous and next interval)
-    if(!is.na(int.i$int_id_lead)){
-      with(
-        int.i,
-        if(int_id == 99 && int_id_lead == 2 |
-           int_id == 99 && int_id_lead == 3 |
-           int_id == 1 && int_id_lead == 1 |
-           int_id == 1 && int_id_lead == 99 |
-           int_id == 2 && int_id_lead == 1 |
-           int_id == 2 && int_id_lead == 99 |
-           int_id == 3 && int_id_lead == 2 |
-           int_id == 3 && int_id_lead == 3 ){
+    events_out <- list()
 
-          stop("Problem identifying heat stress events.
+    k <- 1 # id counter
+
+    for(i in seq_along(1:nrow(ints))){
+
+      int.i <- ints[i, ]
+
+      # stop with error if any id combos that should not exist
+      # e.g., can't have 99 (no overlaps) followed by 2 (overlap with previous and next interval)
+      if(!is.na(int.i$int_id_lead)){
+        with(
+          int.i,
+          if(int_id == 99 && int_id_lead == 2 |
+             int_id == 99 && int_id_lead == 3 |
+             int_id == 1 && int_id_lead == 1 |
+             int_id == 1 && int_id_lead == 99 |
+             int_id == 2 && int_id_lead == 1 |
+             int_id == 2 && int_id_lead == 99 |
+             int_id == 3 && int_id_lead == 2 |
+             int_id == 3 && int_id_lead == 3 ){
+
+            stop("Problem identifying heat stress events.
                \n HINT: If dat has a STATION column, make sure STATION is
                defined as a grouping variable in identify_heat_stress_events()")
 
-        }
-      )
+          }
+        )
+      }
+
+      # assign event id
+      int.i$event_id <- k
+
+      events_out[[i]] <- int.i
+
+      # update id at the end of event
+      if(int.i$int_id == 99 | int.i$int_id == 3) k <- k + 1
+
+      # reset id at the end of the group
+      if(is.na(int.i$int_id_lead)) k <- 1
+
     }
 
-    # assign event id
-    int.i$event_id <- k
-
-    events_out[[i]] <- int.i
-
-    # update id at the end of event
-    if(int.i$int_id == 99 | int.i$int_id == 3) k <- k + 1
-
-    # reset id at the end of the group
-    if(is.na(int.i$int_id_lead)) k <- 1
+    events_out %>%
+      map_df(rbind) %>%
+      # find first and last timestamp of each event
+      dplyr::group_by(..., DEPTH, event_id) %>%
+      dplyr::summarise(
+        stress_start = min(interval_start),
+        stress_end = max(interval_end),
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(..., DEPTH, event_id, stress_start, stress_end)
 
   }
-
-events_out %>%
-    map_df(rbind) %>%
-    # find first and last timestamp of each event
-    dplyr::group_by(..., DEPTH, event_id) %>%
-    dplyr::summarise(
-      stress_start = min(interval_start),
-      stress_end = max(interval_end),
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(..., DEPTH, event_id, stress_start, stress_end)
 
 }
