@@ -39,6 +39,7 @@ filter_out_heat_stress_events_single <- function(dat,
     n_hours = n_hours
   )
 
+
   depths <- unique(dat$DEPTH)
 
   # store filtered data in a list to speed up loop

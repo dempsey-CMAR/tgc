@@ -26,9 +26,6 @@ count_degree_days <- function(dat,
                               ...,
                               heat_threshold = 18,
                               n_hours = 24,
-
-                              # apply_season_filt = FALSE,
-
                               trend_threshold = 4,
                               superchill_threshold = -0.7,
                               max_season = 540,

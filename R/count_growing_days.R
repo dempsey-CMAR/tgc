@@ -57,8 +57,6 @@ count_growing_days <- function(dat,
 
   }
 
- # browser()
-
   # number of days filtered out due to heat stress events for each SEASON, DEPTH, and ...
   # identify_heat_stress_events() automatically groups by DEPTH
   filtered_days <- identify_heat_stress_events(
