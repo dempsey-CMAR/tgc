@@ -7,8 +7,12 @@
 #'   interval of the least frequent sensor.
 #'
 #' @param gap_warning The length of time in hours to consider a substantial
-#'   sampling gap. A warning will be printed if any gaps exceed this duration.
+#'   sampling gap. A warning can be printed if any gaps exceed this duration.
 #'   Default is \code{gap_warning = 6} hours.
+#'
+#' @param quiet Logical argument to suppress Warning message when gap lengths
+#'   exceed \code{gap_warning}. If \code{quiet = TRUE}, the Warning will not be
+#'   printed.
 #'
 #' @return Returns summary table with \code{GAP_START},\code{GAP_LENGTH_DAYS},
 #'   and \code{GAP_LENGTH_HOURS} for each grouping variable for all intervals
@@ -21,8 +25,11 @@
 #' @export
 
 
-check_for_data_gaps <- function(dat, ..., gap_length = 2, gap_warning = 6){
-
+check_for_data_gaps <- function(dat,
+                                ...,
+                                gap_length = 2,
+                                gap_warning = 6,
+                                quiet = FALSE){
 
   # to make sure all groups get assigned a value (even if no data gaps)
   out_table <- dat %>% distinct(..., DEPTH)
@@ -49,7 +56,7 @@ check_for_data_gaps <- function(dat, ..., gap_length = 2, gap_warning = 6){
       GAP_LENGTH_HOURS = if_else(is.na(GAP_LENGTH_HOURS), 0, GAP_LENGTH_HOURS),
       GAP_LENGTH_DAYS = if_else(is.na(GAP_LENGTH_DAYS), 0, GAP_LENGTH_DAYS))
 
-  if(any(gap_table$GAP_LENGTH_HOURS > gap_warning)){
+  if(any(gap_table$GAP_LENGTH_HOURS > gap_warning) & isFALSE(quiet)){
 
     n_warning <- nrow(filter(gap_table, GAP_LENGTH_HOURS > gap_warning))
 

@@ -4,7 +4,7 @@
 \alias{check_for_data_gaps}
 \title{Check for substantial gaps in the time series}
 \usage{
-check_for_data_gaps(dat, ..., gap_length = 2, gap_warning = 6)
+check_for_data_gaps(dat, ..., gap_length = 2, gap_warning = 6, quiet = FALSE)
 }
 \arguments{
 \item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
@@ -21,8 +21,12 @@ Default is \code{gap_length = 2} hours, which is twice the sampling
 interval of the least frequent sensor.}
 
 \item{gap_warning}{The length of time in hours to consider a substantial
-sampling gap. A warning will be printed if any gaps exceed this duration.
+sampling gap. A warning can be printed if any gaps exceed this duration.
 Default is \code{gap_warning = 6} hours.}
+
+\item{quiet}{Logical argument to suppress Warning message when gap lengths
+exceed \code{gap_warning}. If \code{quiet = TRUE}, the Warning will not be
+printed.}
 }
 \value{
 Returns summary table with \code{GAP_START},\code{GAP_LENGTH_DAYS},

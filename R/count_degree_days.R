@@ -9,7 +9,10 @@
 #'
 #' @inheritParams count_growing_days
 #'
-
+#' @param growing_days Optional dataframe including columns \code{DEPTH},
+#'   \code{SEASON}, \code{...} (if required) and {n_growing_days}. If not
+#'   provided, it will be calculated using the \code{count_growing_days}
+#'   function.
 #'
 #' @return Returns a tibble with columns:
 
@@ -17,19 +20,27 @@
 
 #' @author Danielle Dempsey
 
-#' @importFrom dplyr summarise group_by left_join ungroup select %>%
+#' @importFrom dplyr summarise group_by left_join ungroup select %>% everything
 #' @importFrom lubridate date parse_date_time
 
 #' @export
 
 count_degree_days <- function(dat,
                               ...,
+                              growing_days = NULL,
+
                               heat_threshold = 18,
                               n_hours = 24,
+
                               trend_threshold = 4,
                               superchill_threshold = -0.7,
                               max_season = 540,
-                              full_season = TRUE){
+                              full_season = TRUE,
+
+                              rm_gap_days = FALSE,
+                              gap_length = 2,
+                              gap_warning = 6,
+                              quiet = TRUE){
 
 
   if(!("SEASON" %in% colnames(dat))){
@@ -48,18 +59,22 @@ count_degree_days <- function(dat,
 
   }
 
-  # browser()
-
   # Count growing days in each group (SEASON, DEPTH, ...) -------------------
+  if(is.null(growing_days)){
 
-  growing_days <- count_growing_days(
-    dat,
-    ...,                              # automatically grouped by SEASON and DEPTH
-    #apply_season_filt = FALSE,        # season defined above
-    heat_threshold = heat_threshold,
-    n_hours = n_hours
-  )
+     growing_days <- count_growing_days(
+      dat,
+      ...,                              # automatically grouped by SEASON and DEPTH
+      heat_threshold = heat_threshold,
+      n_hours = n_hours,
 
+      rm_gap_days = rm_gap_days,
+      gap_length = gap_length,
+      gap_warning = gap_warning,
+      quiet = quiet
+    )
+
+  }
 
   # Count degree-days for each group  -------------------------------------------------------
 
@@ -81,8 +96,10 @@ count_degree_days <- function(dat,
     ) %>%
     ungroup() %>%
     select(..., SEASON, DEPTH,
-           START_SEASON, END_SEASON, STOCKED_DAYS,
-           n_filtered_days, n_growing_days, AVG_TEMPERATURE, n_degree_days)
+           START_SEASON, END_SEASON,
+           STOCKED_DAYS, n_filtered_days, everything())
+           #n_gap_days, n_growing_days,
+           #AVG_TEMPERATURE, n_degree_days)
 
 }
 

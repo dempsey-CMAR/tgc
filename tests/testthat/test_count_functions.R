@@ -56,7 +56,9 @@ test_that("count_growing_days() outputs expected results",{
 # check that function will assign SEASON if there is no SEASON column
 dat3 <- dat2 %>% select(-SEASON)
 
-growing_dat3 <- suppressMessages(count_growing_days(dat3, STATION, full_season = FALSE))
+growing_dat3 <- suppressMessages(
+  count_growing_days(dat3, STATION, full_season = FALSE)
+  )
 
 test_that("count_growing_days() adds SEASON column if none exists", {
 

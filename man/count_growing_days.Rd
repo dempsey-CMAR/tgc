@@ -12,7 +12,11 @@ count_growing_days(
   trend_threshold = 4,
   superchill_threshold = -0.7,
   max_season = 540,
-  full_season = TRUE
+  full_season = TRUE,
+  rm_gap_days = FALSE,
+  gap_length = 2,
+  gap_warning = 6,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -58,6 +62,23 @@ will only return data for groups with a full season of data (e.g.,
 If \code{full_season = FALSE}, data for all groups will be returned;
 the \code{START_SEASON} and \code{END_SEASON} dates default to the first
 and last timestamp in \code{...} and \code{DEPTH}.}
+
+\item{rm_gap_days}{Logical argument indicating whether to remove days with
+data gaps when counting n_growing_days.}
+
+\item{gap_length}{The length of time in hours to consider a sampling gap.
+Default is gap_length = 2 hours, which is twice the sampling interval of
+the least frequent sensor. The total sample gap length (sum of all sample
+gaps) is subtracted from the number of stocked days to calculate the number
+of growing days.}
+
+\item{gap_warning}{The length of time in hours to consider a substantial
+sampling gap. A warning can be printed if any gaps exceed this duration.
+Default is \code{gap_warning = 6} hours.}
+
+\item{quiet}{Logical argument to suppress Warning message when gap lengths
+exceed \code{gap_warning}. If \code{quiet = TRUE}, the Warning will not be
+printed.}
 }
 \value{
 Returns a tibble with columns: \code{...}, \code{DEPTH},
@@ -73,11 +94,13 @@ Count number of days that were suitable for growth
 }
 \details{
 Days suitable for growth are days that remain after applying season
-and heat stress filters (\code{apply_dd_filters()}).
+and heat stress filters. Option to remove days with data gaps (otherwise
+the assumption is that the temperature on these days is the average
+temperature of the data series).
 
 Results are automatically grouped by \code{SEASON} and \code{DEPTH}.
 
 Runs filter_in_growing_seasons() if no SEASON column in the data. If there
 is not a full season of data, make sure to set argument full_season = FALSE
-or add a SEASON column to dat
+or add a SEASON column to dat.
 }

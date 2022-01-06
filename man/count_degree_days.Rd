@@ -7,12 +7,17 @@
 count_degree_days(
   dat,
   ...,
+  growing_days = NULL,
   heat_threshold = 18,
   n_hours = 24,
   trend_threshold = 4,
   superchill_threshold = -0.7,
   max_season = 540,
-  full_season = TRUE
+  full_season = TRUE,
+  rm_gap_days = FALSE,
+  gap_length = 2,
+  gap_warning = 6,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -24,6 +29,11 @@ will be ignored.}
 
 \item{...}{Additional columns in \code{dat} to use as grouping variables.
 Results are automatically grouped by \code{SEASON} and \code{DEPTH}.}
+
+\item{growing_days}{Optional dataframe including columns \code{DEPTH},
+\code{SEASON}, \code{...} (if required) and {n_growing_days}. If not
+provided, it will be calculated using the \code{count_growing_days}
+function.}
 
 \item{heat_threshold}{The threshold for heat stress. Default is
 \code{heat_threshold = 18}). Every observation above \code{heat_threshold}
@@ -58,6 +68,23 @@ will only return data for groups with a full season of data (e.g.,
 If \code{full_season = FALSE}, data for all groups will be returned;
 the \code{START_SEASON} and \code{END_SEASON} dates default to the first
 and last timestamp in \code{...} and \code{DEPTH}.}
+
+\item{rm_gap_days}{Logical argument indicating whether to remove days with
+data gaps when counting n_growing_days.}
+
+\item{gap_length}{The length of time in hours to consider a sampling gap.
+Default is gap_length = 2 hours, which is twice the sampling interval of
+the least frequent sensor. The total sample gap length (sum of all sample
+gaps) is subtracted from the number of stocked days to calculate the number
+of growing days.}
+
+\item{gap_warning}{The length of time in hours to consider a substantial
+sampling gap. A warning can be printed if any gaps exceed this duration.
+Default is \code{gap_warning = 6} hours.}
+
+\item{quiet}{Logical argument to suppress Warning message when gap lengths
+exceed \code{gap_warning}. If \code{quiet = TRUE}, the Warning will not be
+printed.}
 }
 \value{
 Returns a tibble with columns:

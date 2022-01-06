@@ -17,6 +17,7 @@ utils::globalVariables(c(
   "TIMESTAMP",
   "VALUE",
   "DEPTH",
+  "n_gap_days",
   "n_degree_days",
 
   # filter_days
