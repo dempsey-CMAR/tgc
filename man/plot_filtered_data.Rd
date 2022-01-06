@@ -14,6 +14,7 @@ plot_filtered_data(
   date_breaks_major = NULL,
   date_breaks_minor = NULL,
   date_labels_format = NULL,
+  plotly_friendly = FALSE,
   alpha = 1
 )
 }
@@ -60,6 +61,10 @@ length of the data series.}
 labels on the x-axis, e.g., \code{date_labels_format = "\%y-\%b"}. Default
 is \code{date_labels_format = NULL}, which chooses labels based on the
 length of the data series.}
+
+\item{plotly_friendly}{Logical argument. If TRUE, y-axis label is set to a
+plotly-friendly title ("Temperature (deg C)"). If FALSE,
+\code{expression()} is used to insert the degree symbol.}
 
 \item{alpha}{Transparency for the heat stress and superchill shaded boxes.}
 }

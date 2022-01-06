@@ -3,8 +3,13 @@
 #' @inheritParams identify_growing_seasons
 #' @inheritParams identify_heat_stress_intervals
 #' @inheritParams plot_temperature_at_depth
+#'
 #' @param dat_filtered Filtered data, i.e. the result of
 #'   \code{apply_dd_filters(dat)}.
+#'
+#' @param plotly_friendly Logical argument. If TRUE, y-axis label is set to a
+#'   plotly-friendly title ("Temperature (deg C)"). If FALSE,
+#'   \code{expression()} is used to insert the degree symbol.
 #'
 #' @return Returns a ggplot object.
 #'
@@ -26,6 +31,7 @@ plot_filtered_data <- function(dat, dat_filtered,
                                date_breaks_minor = NULL,
                                date_labels_format = NULL,
 
+                               plotly_friendly = FALSE,
                                alpha = 1){
 
 
@@ -61,6 +67,18 @@ plot_filtered_data <- function(dat, dat_filtered,
   if(!is.null(date_breaks_minor)) axis_breaks$date.breaks.minor <- date_breaks_minor
   if(!is.null(date_labels_format)) axis_breaks$date.labels.format <- date_labels_format
 
+
+# y-axis label ------------------------------------------------------------
+
+if(isFALSE(plotly_friendly)){
+
+  y_axis <- scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)")))
+
+} else {
+
+  y_axis <- scale_y_continuous(name =  "Temperature (deg C)")
+}
+
 # plot --------------------------------------------------------------------
 
   ggplot(dat_plot, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
@@ -80,13 +98,11 @@ plot_filtered_data <- function(dat, dat_filtered,
                      breaks = axis_breaks$date.breaks.major,
                      minor_breaks = axis_breaks$date.breaks.minor,
                      date_labels =  axis_breaks$date.labels.format) +
-    scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)"))) +
+    y_axis +
     scale_colour_manual(name = "Depth (m)",
                         values = colour_pal,
                         drop = FALSE) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
-    # geom_hline(yintercept = superchill_threshold, col = "deepskyblue", lty = 2) +
-    # geom_hline(yintercept = heat_threshold, col = "red", lty = 2) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
     theme_light()
 
