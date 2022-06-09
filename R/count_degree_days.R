@@ -21,6 +21,7 @@
 #' @author Danielle Dempsey
 
 #' @importFrom dplyr summarise group_by left_join ungroup select %>% everything
+#'   relocate
 #' @importFrom lubridate date parse_date_time
 
 #' @export
@@ -97,7 +98,8 @@ count_degree_days <- function(dat,
     ungroup() %>%
     select(..., SEASON, DEPTH,
            START_SEASON, END_SEASON,
-           STOCKED_DAYS, n_filtered_days, everything())
+           STOCKED_DAYS, n_filtered_days, everything()) %>%
+    relocate(AVG_TEMPERATURE, .before = n_degree_days)
            #n_gap_days, n_growing_days,
            #AVG_TEMPERATURE, n_degree_days)
 
