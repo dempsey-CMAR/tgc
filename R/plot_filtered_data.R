@@ -7,6 +7,10 @@
 #' @param dat_filtered Filtered data, i.e. the result of
 #'   \code{apply_dd_filters(dat)}.
 #'
+#' @param ylims Numeric vector of limits for the y-axis.
+#'
+#' @param date_axis_name Name for the x-axis.
+#'
 #' @param plotly_friendly Logical argument. If TRUE, y-axis label is set to a
 #'   plotly-friendly title ("Temperature (deg C)"). If FALSE,
 #'   \code{expression()} is used to insert the degree symbol.
@@ -26,7 +30,12 @@ plot_filtered_data <- function(dat, dat_filtered,
                                heat_threshold = 18,
 
                                colour_palette = NULL,
+                               legend_drop = FALSE,
+                               legend_position = "right",
 
+                               ylims = NULL,
+
+                               date_axis_name = "Date",
                                date_breaks_major = NULL,
                                date_breaks_minor = NULL,
                                date_labels_format = NULL,
@@ -56,9 +65,9 @@ plot_filtered_data <- function(dat, dat_filtered,
 
 # pick colour palette and xaxis breaks ------------------------------------
 
-  if(is.null(colour_palette)) colour_pal <- strings::get_colour_palette(dat_plot)
+if(is.null(colour_palette)) colour_pal <- strings::get_colour_palette(dat_plot)
 
-  colour_pal <- c("grey", colour_pal)
+colour_pal <- c("grey", colour_pal)
 
 
   axis_breaks <- strings::get_xaxis_breaks(dat_plot)
@@ -72,11 +81,17 @@ plot_filtered_data <- function(dat, dat_filtered,
 
 if(isFALSE(plotly_friendly)){
 
-  y_axis <- scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)")))
+  y_axis <- scale_y_continuous(
+    name =  expression(paste("Temperature (",degree,"C)")),
+    limits = ylims
+  )
 
 } else {
 
-  y_axis <- scale_y_continuous(name =  "Temperature (deg C)")
+  y_axis <- scale_y_continuous(
+    name =  "Temperature (deg C)",
+    limits = ylims
+  )
 }
 
 # plot --------------------------------------------------------------------
@@ -94,16 +109,17 @@ if(isFALSE(plotly_friendly)){
 
     geom_point(size = 0.25) +
 
-    scale_x_datetime(name = "Date",
+    scale_x_datetime(name = date_axis_name,
                      breaks = axis_breaks$date.breaks.major,
                      minor_breaks = axis_breaks$date.breaks.minor,
                      date_labels =  axis_breaks$date.labels.format) +
     y_axis +
     scale_colour_manual(name = "Depth (m)",
                         values = colour_pal,
-                        drop = FALSE) +
+                        drop = legend_drop) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
-    theme_light()
+    theme_light() +
+    theme(legend.position = legend_position)
 
 }

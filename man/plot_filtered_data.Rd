@@ -11,6 +11,10 @@ plot_filtered_data(
   superchill_threshold = -0.7,
   heat_threshold = 18,
   colour_palette = NULL,
+  legend_drop = FALSE,
+  legend_position = "right",
+  ylims = NULL,
+  date_axis_name = "Date",
   date_breaks_major = NULL,
   date_breaks_minor = NULL,
   date_labels_format = NULL,
@@ -46,6 +50,16 @@ triggers an \code{n-hour} heat stress interval.}
 \item{colour_palette}{Optional vector of hex colors onto which \code{DEPTH}
 will be mapped. If \code{colour_palette = NULL} (the default), the reverse
 viridis colour palette will be used (option D).}
+
+\item{legend_drop}{Logical argument indicating whether to drop unused depths
+from the legend. Default is \code{legend_drop = FALSE}}
+
+\item{legend_position}{Position of the legend ("none", "left", "right",
+"bottom", "top"). Default is \code{legend_position = "right"}.}
+
+\item{ylims}{Numeric vector of limits for the y-axis.}
+
+\item{date_axis_name}{Name for the x-axis.}
 
 \item{date_breaks_major}{Character string specifying intervals for major
 breaks on the x-axis, e.g., \code{date_breaks_major = "2 month"}. Default
