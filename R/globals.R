@@ -90,7 +90,10 @@ utils::globalVariables(c(
   "TGC",
   "TGC_DEGREE_DAYS",
   "INDEX",
-  "CHECK"
+  "CHECK",
+
+  # create_station_label
+  "LABEL"
 
 ))
 
