@@ -12,12 +12,14 @@ plot_temperature_at_depth(
   facet_var = NULL,
   colour_palette = NULL,
   legend_drop = FALSE,
+  legend_position = "right",
   date_breaks_major = NULL,
   date_breaks_minor = NULL,
   date_labels_format = NULL,
   ncol = 1,
   nrow = NULL,
-  alpha = 1
+  alpha = 1,
+  plotly_friendly = FALSE
 )
 }
 \arguments{
@@ -54,6 +56,9 @@ viridis colour palette will be used (option D).}
 \item{legend_drop}{Logical argument indicating whether to drop unused depths
 from the legend. Default is \code{legend_drop = FALSE}}
 
+\item{legend_position}{Position of the legend ("none", "left", "right",
+"bottom", "top"). Default is \code{legend_position = "right"}.}
+
 \item{date_breaks_major}{Character string specifying intervals for major
 breaks on the x-axis, e.g., \code{date_breaks_major = "2 month"}. Default
 is \code{date_breaks_major = NULL}, which chooses breaks based on the
@@ -74,6 +79,10 @@ length of the data series.}
 \item{nrow}{Number of rows for faceted figure. Default is \code{nrow = NULL}.}
 
 \item{alpha}{Transparency for the heat stress and superchill shaded boxes.}
+
+\item{plotly_friendly}{Logical argument. If TRUE, y-axis label is set to a
+plotly-friendly title ("Temperature (deg C)"). If FALSE,
+\code{expression()} is used to insert the degree symbol.}
 }
 \value{
 ggplot object

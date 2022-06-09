@@ -30,11 +30,19 @@
 #' @param legend_drop Logical argument indicating whether to drop unused depths
 #'   from the legend. Default is \code{legend_drop = FALSE}
 #'
+#' @param legend_position Position of the legend ("none", "left", "right",
+#'   "bottom", "top"). Default is \code{legend_position = "right"}.
+#'
 #' @param ncol Number of columns for faceted figure. Default is \code{ncol = 1}.
 #'
 #' @param nrow Number of rows for faceted figure. Default is \code{nrow = NULL}.
 #'
 #' @param alpha Transparency for the heat stress and superchill shaded boxes.
+#'
+#' @param plotly_friendly Logical argument. If TRUE, y-axis label is set to a
+#'   plotly-friendly title ("Temperature (deg C)"). If FALSE,
+#'   \code{expression()} is used to insert the degree symbol.
+#'
 #'
 #' @return ggplot object
 #'
@@ -56,6 +64,7 @@ plot_temperature_at_depth <- function(dat,
 
                                       colour_palette = NULL,
                                       legend_drop = FALSE,
+                                      legend_position = "right",
 
                                       date_breaks_major = NULL,
                                       date_breaks_minor = NULL,
@@ -63,7 +72,9 @@ plot_temperature_at_depth <- function(dat,
 
                                       ncol = 1,
                                       nrow = NULL,
-                                      alpha = 1){
+                                      alpha = 1,
+
+                                      plotly_friendly = FALSE){
 
   # observations can be duplicated for consecutive seasons.
   # if not faceted by season, remove duplicates
@@ -106,6 +117,16 @@ plot_temperature_at_depth <- function(dat,
   )
 
 
+  if(isFALSE(plotly_friendly)){
+
+    y_axis <- scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)")))
+
+  } else {
+
+    y_axis <- scale_y_continuous(name =  "Temperature (deg C)")
+  }
+
+
 # figure ------------------------------------------------------------------
 
   p <- ggplot(dat, aes(x = TIMESTAMP, y = VALUE, col = DEPTH)) +
@@ -118,15 +139,18 @@ plot_temperature_at_depth <- function(dat,
              ymin = -Inf, ymax = superchill_threshold,
              fill = "#A6CEE3",  alpha = alpha) +
     geom_point(size = 0.25) +
-    scale_y_continuous(name =  expression(paste("Temperature (",degree,"C)"))) +
+    y_axis +
     scale_colour_manual(name = "Depth (m)",
                         values = colour_palette,
                         drop = legend_drop) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
     geom_hline(yintercept = trend_threshold, col = "grey", lty = 2) +
     theme_light() +
-    theme(strip.background = element_rect(fill = NA),
-          strip.text = element_text(color = "black", hjust = 0))
+    theme(
+      strip.background = element_rect(fill = NA),
+      strip.text = element_text(color = "black", hjust = 0),
+      legend.position = legend_position
+    )
 
 
   if(is.character(facet_var))  {
@@ -137,10 +161,7 @@ plot_temperature_at_depth <- function(dat,
       facet_wrap(facet_var, ncol = ncol, nrow = nrow,
                  labeller = label_wrap_gen(multi_line=FALSE))
   }
-  # if(is.null(facet_var)){
 
-
-  #}
   p + x_scale
 }
 
