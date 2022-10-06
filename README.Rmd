@@ -1,0 +1,43 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# tgc
+
+Placeholder README. More info to come!
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/dempsey-CMAR/tgc/workflows/R-CMD-check/badge.svg)](https://github.com/dempsey-CMAR/tgc/actions)
+<!-- badges: end -->
+
+The goal of tgc is to ...
+
+## Installation
+
+You can install the development version of tgc from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("dempsey-CMAR/tgc")
+```
+
+## Package Structure
+
+```{r, echo=FALSE, out.height='120%', out.width='120%', fig.align='center', dpi=600}
+
+knitr::include_graphics("man/figures/2022-10-05_package_structure.png")
+
+```
+
+
