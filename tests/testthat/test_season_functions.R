@@ -147,17 +147,37 @@ test_that("identify_growing_seasons(dat, full_season = FALSE) worked for both st
 # check that function output correct results (slightly different logic for each case)
 test_that("identify_growing_seasons(dat, full_season = FALSE) returns expected results",{
 
-  expect_equal(as.character(p_seasons_st1$START_SEASON),
-               c("2021-06-30 23:45:00",    # first obs = 4
-                 "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
-                 "2022-02-01 00:00:00",    # first obs < 4 & second obs > 4
-                 "2022-02-01 00:00:00"))   # first obs < 4 & second obs > 4
+  # expect_equal(as.character(p_seasons_st1$START_SEASON),
+  #              c("2021-06-30 23:45:00",    # first obs = 4
+  #                "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
+  #                "2022-02-01 00:00:00",    # first obs < 4 & second obs > 4
+  #                "2022-02-01 00:00:00"))   # first obs < 4 & second obs > 4
+  #
+  # expect_equal(as.character(p_seasons_st1$END_SEASON),
+  #              c("2022-02-28 00:14:00",    # first superchill
+  #                "2022-02-28 00:00:00",    # last obs bc no superchill
+  #                "2022-02-28 00:45:00",    # last obs bc looking for superchill in 2023
+  #                "2022-02-28 00:00:00"))   # last obs bc looking for superchill in 2023
 
-  expect_equal(as.character(p_seasons_st1$END_SEASON),
-               c("2022-02-28 00:14:00",    # first superchill
-                 "2022-02-28 00:00:00",    # last obs bc no superchill
-                 "2022-02-28 00:45:00",    # last obs bc looking for superchill in 2023
-                 "2022-02-28 00:00:00"))   # last obs bc looking for superchill in 2023
+  expect_equal(
+    p_seasons_st1$START_SEASON,
+    as_datetime(
+      c("2021-06-30 23:45:00",    # first obs = 4
+        "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
+        "2022-02-01 00:00:00",    # first obs < 4 & second obs > 4
+        "2022-02-01 00:00:00")    # first obs < 4 & second obs > 4
+    )
+  )
+
+  expect_equal(
+    p_seasons_st1$END_SEASON,
+    as_datetime(
+      c("2022-02-28 00:14:00",    # first superchill
+        "2022-02-28 00:00:00",    # last obs bc no superchill
+        "2022-02-28 00:45:00",    # last obs bc looking for superchill in 2023
+        "2022-02-28 00:00:00")    # last obs bc looking for superchill in 2023
+    )
+  )
 
 })
 
@@ -184,18 +204,39 @@ test_that("filter_in_growing_seasons(dat, full_season = FALSE) worked for both s
 
 # check that function output correct results (slightly different logic for each case)
 test_that("identify_growing_seasons(dat, full_season = FALSE) returns expected results",{
+#
+#   expect_equal(as.character(filt_st1$START),
+#                c("2021-06-30 23:45:00",    # first obs = 4
+#                  "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
+#                  "2022-02-01 00:00:00",
+#                  "2022-02-01 00:00:00"))
+#
+#   expect_equal(as.character(filt_st1$END),
+#                c("2022-02-28 00:00:00",    # superchill obs was filtered out
+#                  "2022-02-28 00:00:00",    # last obs bc no superchill
+#                  "2022-02-28 00:45:00",    # last obs bc looking for superchill in 2023
+#                  "2022-02-28 00:00:00"))   # last obs bc looking for superchill in 2023
 
-  expect_equal(as.character(filt_st1$START),
-               c("2021-06-30 23:45:00",    # first obs = 4
-                 "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
-                 "2022-02-01 00:00:00",
-                 "2022-02-01 00:00:00"))
 
-  expect_equal(as.character(filt_st1$END),
-               c("2022-02-28 00:00:00",    # superchill obs was filtered out
-                 "2022-02-28 00:00:00",    # last obs bc no superchill
-                 "2022-02-28 00:45:00",    # last obs bc looking for superchill in 2023
-                 "2022-02-28 00:00:00"))   # last obs bc looking for superchill in 2023
+  expect_equal(
+    filt_st1$START,
+    as_datetime(
+      c("2021-06-30 23:45:00",    # first obs = 4
+        "2021-07-01 00:00:00",    # first obs < 4 & second obs > 4
+        "2022-02-01 00:00:00",
+        "2022-02-01 00:00:00")
+    )
+  )
+
+  expect_equal(
+    filt_st1$END,
+    as_datetime(
+      c("2022-02-28 00:00:00",  # superchill obs was filtered out
+        "2022-02-28 00:00:00",    # last obs bc no superchill
+        "2022-02-28 00:45:00",    # last obs bc looking for superchill in 2023
+        "2022-02-28 00:00:00")    # last obs bc looking for superchill in 2023
+    )
+  )
 
 })
 
