@@ -1,10 +1,10 @@
-#' Identify when VALUE first crosses below a lower threshold
+#' Identify when VALUE first crosses below a threshold
 #'
-#' @details Identifies \code{TIMESTAMP} when \code{VALUE} first crosses below
+#' @details Identifies \code{TIMESTAMP} when \code{VALUE} first crosses below a
 #'   threshold for each group in \code{DEPTH} and \code{...}.
 #'
 #'   If the \code{VALUE} does not cross the threshold for any groups, a
-#'   dataframe with 0 rows will be returned.
+#'   data frame with 0 rows will be returned.
 #'
 #' @inheritParams identify_trending_up
 #'
@@ -13,9 +13,9 @@
 #'   \code{superchill_threshold} triggers the end of the growing season for each
 #'   group in \code{DEPTH} and \code{...}.
 #'
-#' @return Returns a tibble with the \code{TIMESTAMP} for oneminute before the
+#' @return Returns a tibble with the \code{TIMESTAMP} for one minute before the
 #'   first time \code{VALUE} goes below \code{superchill_threshold} (for each
-#'   \code{DEPTH} and group in \code{...})..
+#'   \code{DEPTH} and group in \code{...}).
 #'
 #'   This \code{TIMESTAMP} is passed to \code{identify_growing_seasons()} to
 #'   denote the end of the growing season.

@@ -1,4 +1,4 @@
-#' Identify n-hour intervals beginning when threshold is exceeded
+#' Identify n-hour intervals beginning when a threshold is exceeded
 #'
 #' @inheritParams identify_trending_up
 #'
@@ -9,7 +9,7 @@
 #' @param n_hours Length of heat stress interval in hours (default is
 #'   \code{n_hours = 24}).
 #'
-#' @return Returns a dataframe with columns: \code{...},  \code{DEPTH},
+#' @return Returns a data frame with columns: \code{...},  \code{DEPTH},
 #'   \code{interval_start} and \code{interval_end}. \code{interval_start}
 #'   indicates the beginning of each heat stress interval, i.e, the
 #'   \code{TIMESTAMP} of all observations where \code{VALUE} is greater than or
@@ -26,7 +26,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' data(string_data)
 #'
 #' dat <- string_data[which(string_data$VARIABLE == "Temperature"), ]

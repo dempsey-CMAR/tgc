@@ -5,7 +5,7 @@
 #'   not occur during the growing seasons).
 #'
 #'   This function only works for a single \code{STATION}. For multiple
-#'   \code{STATION}s, use \code{st_filter_in_growing_seasons()}.
+#'   \code{STATION}s, use \code{filter_in_growing_seasons()}.
 #'
 #'   The growing season starts when the temperature crosses
 #'   \code{trend_threshold} and does not return below \code{trend_threshold}

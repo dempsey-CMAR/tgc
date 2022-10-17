@@ -7,7 +7,7 @@
 filter_out_heat_stress_events_single(dat, heat_threshold = 18, n_hours = 24)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
@@ -32,7 +32,7 @@ Filters out observations that occur during heat stress events, as
 defined by \code{identify_heat_stress_events()}.
 
 This function only works for a single \code{STATION}. For multiple
-\code{STATION}s, use \code{st_filter_out_heat_stress_events()}.
+\code{STATION}s, use \code{filter_out_heat_stress_events()}.
 
 Every observation that exceeds the threshold has a corresponding heat
 stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals

@@ -13,7 +13,7 @@ filter_in_growing_seasons_single(
 )
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
@@ -61,7 +61,7 @@ Keeps observations that occur during growing seasons as defined by
 not occur during the growing seasons).
 
 This function only works for a single \code{STATION}. For multiple
-\code{STATION}s, use \code{st_filter_in_growing_seasons()}.
+\code{STATION}s, use \code{filter_in_growing_seasons()}.
 
 The growing season starts when the temperature crosses
 \code{trend_threshold} and does not return below \code{trend_threshold}

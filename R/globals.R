@@ -91,6 +91,7 @@ utils::globalVariables(c(
   "TGC_DEGREE_DAYS",
   "INDEX",
   "CHECK",
+  "TGC_COEF",
 
   # create_station_label
   "LABEL"

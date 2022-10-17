@@ -2,12 +2,12 @@
 % Please edit documentation in R/identify_heat_stress_intervals.R
 \name{identify_heat_stress_intervals}
 \alias{identify_heat_stress_intervals}
-\title{Identify n-hour intervals beginning when threshold is exceeded}
+\title{Identify n-hour intervals beginning when a threshold is exceeded}
 \usage{
 identify_heat_stress_intervals(dat, ..., heat_threshold = 18, n_hours = 24)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
@@ -24,7 +24,7 @@ triggers an \code{n-hour} heat stress interval.}
 \code{n_hours = 24}).}
 }
 \value{
-Returns a dataframe with columns: \code{...},  \code{DEPTH},
+Returns a data frame with columns: \code{...},  \code{DEPTH},
 \code{interval_start} and \code{interval_end}. \code{interval_start}
 indicates the beginning of each heat stress interval, i.e, the
 \code{TIMESTAMP} of all observations where \code{VALUE} is greater than or
@@ -34,10 +34,9 @@ the heat stress interval, i.e., \code{interval_start} + n_hours.
 Note: intervals may overlap with previous interval(s).
 }
 \description{
-Identify n-hour intervals beginning when threshold is exceeded
+Identify n-hour intervals beginning when a threshold is exceeded
 }
 \examples{
-
 data(string_data)
 
 dat <- string_data[which(string_data$VARIABLE == "Temperature"), ]

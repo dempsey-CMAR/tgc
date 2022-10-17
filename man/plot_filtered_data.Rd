@@ -23,7 +23,7 @@ plot_filtered_data(
 )
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns

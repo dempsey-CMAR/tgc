@@ -7,7 +7,7 @@
 identify_trending_up(dat, ..., trend_threshold = 4)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
@@ -38,8 +38,8 @@ did not cross \code{trend_threshold}.
 Identify when VALUE begins trending up
 }
 \details{
-Identifies \code{TIMESTAMP} when \code{VALUE} exceeds threshold and
-does not return below the threshold, for each group in \code{DEPTH} and
+Identifies \code{TIMESTAMP} when \code{VALUE} exceeds a threshold
+and does not return below the threshold, for each group in \code{DEPTH} and
 \code{...}.
 
 If \code{VALUE} never crosses the threshold because temperature is always >

@@ -7,7 +7,7 @@
 identify_heat_stress_events(dat, ..., heat_threshold = 18, n_hours = 24)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
@@ -34,7 +34,7 @@ Note: Events for a given depth do not overlap, but \code{event_end} and
 Identify start and end of non-overlapping heat stress events
 }
 \details{
-Every observation that exceeds the threshold is assigned an heat
+Every observation that exceeds the threshold is assigned a heat
 stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals
 may overlap with one or more other intervals.
 

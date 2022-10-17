@@ -2,12 +2,12 @@
 % Please edit documentation in R/identify_first_superchill.R
 \name{identify_first_superchill}
 \alias{identify_first_superchill}
-\title{Identify when VALUE first crosses below a lower threshold}
+\title{Identify when VALUE first crosses below a threshold}
 \usage{
 identify_first_superchill(dat, ..., superchill_threshold = -0.7)
 }
 \arguments{
-\item{dat}{Dataframe with at least three columns: \code{TIMESTAMP} (must be
+\item{dat}{Data frame with at least three columns: \code{TIMESTAMP} (must be
 possible to convert to POSIXct), \code{DEPTH}, and \code{VALUE}. If column
 \code{VARIABLE} is included, it must have one unique entry. May also
 include columns with grouping variables passed to \code{...}. Other columns
@@ -22,9 +22,9 @@ Results are automatically grouped by \code{DEPTH}.}
 group in \code{DEPTH} and \code{...}.}
 }
 \value{
-Returns a tibble with the \code{TIMESTAMP} for oneminute before the
+Returns a tibble with the \code{TIMESTAMP} for one minute before the
 first time \code{VALUE} goes below \code{superchill_threshold} (for each
-\code{DEPTH} and group in \code{...})..
+\code{DEPTH} and group in \code{...}).
 
 This \code{TIMESTAMP} is passed to \code{identify_growing_seasons()} to
 denote the end of the growing season.
@@ -33,12 +33,12 @@ No row will be returned for groups for which \code{VALUE} did not cross
 \code{superchill_threshold}.
 }
 \description{
-Identify when VALUE first crosses below a lower threshold
+Identify when VALUE first crosses below a threshold
 }
 \details{
-Identifies \code{TIMESTAMP} when \code{VALUE} first crosses below
+Identifies \code{TIMESTAMP} when \code{VALUE} first crosses below a
 threshold for each group in \code{DEPTH} and \code{...}.
 
 If the \code{VALUE} does not cross the threshold for any groups, a
-dataframe with 0 rows will be returned.
+data frame with 0 rows will be returned.
 }

@@ -1,6 +1,6 @@
 #' Identify start and end of non-overlapping heat stress events
 #'
-#' @details Every observation that exceeds the threshold is assigned an heat
+#' @details Every observation that exceeds the threshold is assigned a heat
 #'   stress interval (\code{TIMESTAMP} of the observation + n_hours). Intervals
 #'   may overlap with one or more other intervals.
 #'
