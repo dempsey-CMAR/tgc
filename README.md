@@ -24,4 +24,7 @@ devtools::install_github("dempsey-CMAR/tgc")
 
 ## Package Structure
 
-<img src="man/figures/2022-10-05_package_structure.png" width="120%" height="120%" style="display: block; margin: auto;" />
+The function at the tip calls or uses information from the function at
+the tail.
+
+<img src="man/figures/2022-10-11_package_structure.PNG" width="120%" height="120%" style="display: block; margin: auto;" />

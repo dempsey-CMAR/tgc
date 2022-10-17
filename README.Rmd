@@ -34,9 +34,11 @@ devtools::install_github("dempsey-CMAR/tgc")
 
 ## Package Structure
 
+The function at the tip calls or uses information from the function at the tail.
+
 ```{r, echo=FALSE, out.height='120%', out.width='120%', fig.align='center', dpi=600}
 
-knitr::include_graphics("man/figures/2022-10-05_package_structure.png")
+knitr::include_graphics("man/figures/2022-10-11_package_structure.PNG")
 
 ```
 
