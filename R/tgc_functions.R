@@ -127,7 +127,7 @@ TGC_calculate_initial_weight <- function(dd_table,
 #' @return Returns a table with columns \code{INITIAL_WEIGHT},
 #'   \code{FINAL_WEIGHT}, \code{TGC}, and \code{TGC_DEGREE_DAYS}.
 #'
-#' @importFrom dplyr mutate
+#' @importFrom dplyr filter mutate
 #'
 #' @export
 
@@ -163,4 +163,55 @@ TGC_calculate_degree_days <- function(initial_weight,
 
 }
 
+
+
+#' Calculate the thermal growth coefficient
+#'
+#' @inheritParams TGC_calculate_final_weight
+#'
+#' @inheritParams TGC_calculate_initial_weight
+#'
+#' @param average_temp Average temperature of the growing days.
+#'
+#' @param n_days Number of growing days.
+#'
+#' @return Returns a table with columns \code{INITIAL_WEIGHT},
+#'   \code{FINAL_WEIGHT}, \code{degree_days}, and \code{TGC_COEF}.
+#'
+#' @importFrom dplyr filter mutate
+#'
+#' @export
+
+TGC_calculate_coefficent <- function(initial_weight,
+                                     final_weight,
+                                     average_temp,
+                                     n_days){
+
+  # make a table with all combinations of TGC and initial weight
+  # filter for FINAL_WEIGHT > INITIAL_WEIGHT in case any values in initial_weight
+  # are greater than any values in final_weight
+  params <- data.frame(
+    INITIAL_WEIGHT = initial_weight,
+    FINAL_WEIGHT = final_weight
+    ) %>%
+    mutate(CHECK = FINAL_WEIGHT > INITIAL_WEIGHT) %>%
+    filter(CHECK) %>%
+    mutate(n_degree_days = average_temp * n_days)
+
+  if(sum(params$CHECK) < nrow(params)){
+
+    print(params %>% filter(CHECK == 0))
+
+    stop("Final weight is less than initial weight for above row(s)")
+
+  }
+
+  # calculate degree days for each row and return
+  params %>%
+    mutate(
+      TGC_COEF = (FINAL_WEIGHT^(1/3) - INITIAL_WEIGHT^(1/3)) * (1000 / n_degree_days),
+      TGC_COEF = round(TGC_COEF, digits = 3)
+    ) %>%
+    select(-CHECK)
+}
 
