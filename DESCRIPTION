@@ -32,3 +32,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Remotes: Centre-for-Marine-Applied-Research/strings
+URL: https://dempsey-cmar.github.io/tgc/
