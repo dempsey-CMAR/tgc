@@ -10,10 +10,10 @@ Placeholder README. More info to come!
 [![R-CMD-check](https://github.com/dempsey-CMAR/tgc/workflows/R-CMD-check/badge.svg)](https://github.com/dempsey-CMAR/tgc/actions)
 <!-- badges: end -->
 
-The goal of `tgc` is to facilitate application of the Thermal Growth
-Coefficient (TGC) model for aquaculture. The package include functions
-to identify stocked seasons, filter out heat stress observations, apply
-the TGC model, and visualize results.
+The goal of `tgc` is to facilitate application of the Thermal-Unit
+Growth Coefficient (TGC) model for aquaculture. The package include
+functions to identify stocked seasons, filter out heat stress
+observations, apply the TGC model, and visualize results.
 
 ## Installation
 
