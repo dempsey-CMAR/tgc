@@ -7,9 +7,9 @@
 TGC_calculate_coefficent(initial_weight, final_weight, average_temp, n_days)
 }
 \arguments{
-\item{initial_weight}{A vector of initial weight(s) of the fish in grams.}
+\item{initial_weight}{A vector of initial weight(s) of the fish in kilograms.}
 
-\item{final_weight}{A vector of final weight(s) of the fish in grams.}
+\item{final_weight}{A vector of final weight(s) of the fish in kilograms.}
 
 \item{average_temp}{Average temperature of the growing days.}
 

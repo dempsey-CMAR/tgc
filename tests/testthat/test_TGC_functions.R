@@ -2,7 +2,7 @@
 
 # test TGC functions
 
-library(ddpcr) # to suppress print from error message
+#library(ddpcr) # to suppress print from error message
 library(dplyr)
 library(tgc)
 
@@ -48,8 +48,11 @@ test_that("TGC functions have correct number of rows", {
 
 test_that("TGC_calculate_degree_days() will stop with error if final_weight is less than intial_weight",{
 
+  # expect_error(
+  #   ddpcr:quiet(TGC_calculate_degree_days(initial_weight = 5, final_weight = 4, tgc = 0.3))
+  # )
   expect_error(
-    ddpcr:quiet(TGC_calculate_degree_days(initial_weight = 5, final_weight = 4, tgc = 0.3))
+   TGC_calculate_degree_days(initial_weight = 5, final_weight = 4, tgc = 0.3)
   )
 
 })

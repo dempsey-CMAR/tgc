@@ -10,7 +10,7 @@ TGC_calculate_initial_weight(dd_table, final_weight, tgc)
 \item{dd_table}{Dataframe with degree-day data, as exported from
 \code{count_degree_days}. Must include columns \code{n_degree_days}.}
 
-\item{final_weight}{A vector of final weight(s) of the fish in grams.}
+\item{final_weight}{A vector of final weight(s) of the fish in kilograms.}
 
 \item{tgc}{A vector of thermal growth coefficient(s).}
 }

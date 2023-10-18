@@ -14,7 +14,7 @@
 #' @param dd_table Dataframe with degree-day data, as exported from
 #'   \code{count_degree_days}. Must include columns \code{n_degree_days}.
 #'
-#' @param initial_weight A vector of initial weight(s) of the fish in grams.
+#' @param initial_weight A vector of initial weight(s) of the fish in kilograms.
 #'
 #' @param tgc A vector of thermal growth coefficient(s).
 #'
@@ -73,7 +73,7 @@ TGC_calculate_final_weight <-function(dd_table,
 #'
 #' @inheritParams TGC_calculate_final_weight
 #'
-#' @param final_weight A vector of final weight(s) of the fish in grams.
+#' @param final_weight A vector of final weight(s) of the fish in kilograms.
 #'
 #' @return Returns \code{dd_table} additional columns \code{FINAL_WEIGHT},
 #'   \code{TGC}, and \code{TGC_INITIAL_WEIGHT}.
@@ -145,11 +145,11 @@ TGC_calculate_degree_days <- function(initial_weight,
     mutate(CHECK = FINAL_WEIGHT > INITIAL_WEIGHT) %>%
     filter(CHECK)
 
-  if(sum(params$CHECK) < nrow(params)){
+  if(sum(params$CHECK) < nrow(params) | nrow(params) == 0){
 
-    print(params %>% filter(CHECK == 0))
+   # print(params %>% filter(CHECK == 0))
 
-    stop("Final weight is less than initial weight for above row(s)")
+    stop("final_weight must not be less than initial_weight")
 
   }
 

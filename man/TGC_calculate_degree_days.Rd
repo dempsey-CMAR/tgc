@@ -8,9 +8,9 @@ weight}
 TGC_calculate_degree_days(initial_weight, final_weight, tgc)
 }
 \arguments{
-\item{initial_weight}{A vector of initial weight(s) of the fish in grams.}
+\item{initial_weight}{A vector of initial weight(s) of the fish in kilograms.}
 
-\item{final_weight}{A vector of final weight(s) of the fish in grams.}
+\item{final_weight}{A vector of final weight(s) of the fish in kilograms.}
 
 \item{tgc}{A vector of thermal growth coefficient(s).}
 }
